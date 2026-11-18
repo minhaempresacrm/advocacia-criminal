@@ -1,14 +1,15 @@
 /* ========================================================
-   ESTILOS PERSONALIZADOS: ADVOCACIA CRIMINAL DE ELITE
-   Inspirado no estilo visual de Matheus Araújo (_marsdesigner)
+   DRA. NATHALIA LISBOA — ADVOCACIA CRIMINAL & CONSUMIDOR
+   Estética Cinematográfica + Motor 3D Fly-Over (14.5s @ 60fps)
    ======================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap');
 
 :root {
   --color-obsidian: #080A0F;
-  --color-crimson: #4A0E17;
-  --color-crimson-light: #7A1422;
+  --color-crimson: #5C1618;
+  --color-crimson-dark: #380B0D;
+  --color-crimson-light: #822024;
   --color-gold: #C5A059;
   --color-gold-light: #F3E5AB;
   --color-gold-dark: #8F7035;
@@ -16,12 +17,17 @@
   --font-display: 'Cinzel', serif;
   --font-impact: 'Syne', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-geist: 'Geist', sans-serif;
+  --font-serif-italic: 'Instrument Serif', serif;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
   scroll-behavior: smooth;
 }
 
@@ -50,39 +56,30 @@ body {
   background: #C5A059;
 }
 
-/* Tipografia Monumental */
-.font-display {
-  font-family: var(--font-display);
-}
-.font-impact {
-  font-family: var(--font-impact);
-}
-.font-body {
-  font-family: var(--font-body);
-}
+/* Classes de Fonte */
+.font-display { font-family: var(--font-display); }
+.font-impact { font-family: var(--font-impact); }
+.font-body { font-family: var(--font-body); }
+.font-geist { font-family: var(--font-geist); }
+.font-instrument { font-family: var(--font-serif-italic); }
 
 /* Letras Gigantes de Fundo */
 .monumental-title {
-  font-size: clamp(3.2rem, 9.5vw, 9.8rem);
-  line-height: 0.88;
+  font-size: clamp(2.8rem, 8.2vw, 8.6rem);
+  line-height: 0.9;
   letter-spacing: -0.03em;
   font-weight: 900;
   text-transform: uppercase;
 }
 
 .text-stroke-gold {
-  -webkit-text-stroke: 1.5px rgba(197, 160, 89, 0.8);
+  -webkit-text-stroke: 1.5px rgba(197, 160, 89, 0.85);
   color: transparent;
   transition: all 0.4s ease;
 }
 .text-stroke-gold:hover {
-  color: rgba(197, 160, 89, 0.2);
+  color: rgba(197, 160, 89, 0.18);
   -webkit-text-stroke-color: #F3E5AB;
-}
-
-.text-stroke-dark {
-  -webkit-text-stroke: 2px #080A0F;
-  color: transparent;
 }
 
 /* Efeito Dourado Metálico */
@@ -92,60 +89,99 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.border-gold-gradient {
-  border-image: linear-gradient(to bottom right, #C5A059, rgba(197, 160, 89, 0.2)) 1;
-}
-
-/* Efeitos 3D e Parallax */
+/* Efeitos 3D e Parallax no Modo Navegação */
 .perspective-container {
-  perspective: 1200px;
+  perspective: 1600px;
   transform-style: preserve-3d;
 }
 
 .floating-hero-object {
   transform-style: preserve-3d;
   will-change: transform;
-  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 45px rgba(197, 160, 89, 0.25));
+  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 45px rgba(197, 160, 89, 0.28));
   animation: floatSubtle 6s ease-in-out infinite;
 }
 
 @keyframes floatSubtle {
-  0%, 100% {
-    transform: translateY(0px) rotateY(0deg) rotateX(0deg);
-  }
-  50% {
-    transform: translateY(-16px) rotateY(4deg) rotateX(2deg);
-  }
+  0%, 100% { transform: translateY(0px) rotateY(0deg) rotateX(0deg); }
+  50% { transform: translateY(-14px) rotateY(4deg) rotateX(2deg); }
+}
+
+/* 4 Logo Tiles ao lado do botão Hero */
+.hero-logo-tile {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(197, 160, 89, 0.75);
+  box-shadow: 0 10px 24px rgba(26, 33, 51, 0.35), 0 0 14px rgba(197, 160, 89, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+  will-change: transform;
+}
+.hero-logo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-logo-tile:hover {
+  transform: translate3d(0, -10px, 40px) scale(1.22) rotateX(18deg);
+  box-shadow: 4px 18px 28px rgba(26, 33, 51, 0.45);
+}
+
+/* Chips 3D que se erguem em direção à lente */
+[data-layer="chip"] {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+[data-layer="chip"]:hover {
+  transform: translate3d(0, -8px, 60px) rotateX(24deg);
+  box-shadow: 6px 24px 34px rgba(26, 33, 51, 0.38);
 }
 
 /* Glow e Luz de Fundo */
 .radial-glow-gold {
   background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.18) 0%, rgba(8, 10, 15, 0) 70%);
 }
-
 .radial-glow-crimson {
-  background: radial-gradient(circle at 50% 50%, rgba(122, 20, 34, 0.25) 0%, rgba(8, 10, 15, 0) 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(92, 22, 24, 0.32) 0%, rgba(8, 10, 15, 0) 70%);
 }
 
-/* Cards com Elementos que Rompem a Borda */
+/* Cards de Especialidades (data-layer="card") */
 .feature-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  background: linear-gradient(180deg, rgba(22, 27, 38, 0.9) 0%, rgba(12, 16, 24, 0.95) 100%);
-  border: 1px solid rgba(197, 160, 89, 0.2);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.4s ease;
+  background: linear-gradient(180deg, rgba(22, 27, 38, 0.94) 0%, rgba(12, 16, 24, 0.98) 100%);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
-
 .feature-card:hover {
-  transform: translateY(-12px);
-  border-color: rgba(197, 160, 89, 0.6);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(197, 160, 89, 0.15);
+  transform: translate3d(0, -14px, 48px) rotateX(8deg);
+  border-color: rgba(197, 160, 89, 0.65);
+  box-shadow: 5px 22px 38px rgba(26, 33, 51, 0.5), 0 0 28px rgba(197, 160, 89, 0.16);
 }
-
 .card-pop-element {
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .feature-card:hover .card-pop-element {
-  transform: translateY(-10px) scale(1.06);
+  transform: translate3d(0, -10px, 30px) scale(1.08);
+}
+
+/* Card de Depoimento com Borda Branca 34px (5.45s - 6.3s spec) */
+.testimonial-3d-card {
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.55s ease;
+  transform-style: preserve-3d;
+  border-bottom: 12px solid #FFFFFF;
+  box-shadow: 0 24px 48px rgba(26, 33, 51, 0.28);
+}
+.testimonial-3d-card:hover {
+  transform: translate3d(0, -16px, 90px) rotateX(22deg);
+  border-bottom-width: 26px;
+  box-shadow: 11px 44px 62px rgba(26, 33, 51, 0.34);
 }
 
 /* Badges e Botões de Urgência */
@@ -156,7 +192,7 @@ body {
   content: '';
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 12px;
   transform: translateY(-50%);
   width: 8px;
   height: 8px;
@@ -167,18 +203,11 @@ body {
 }
 
 @keyframes pulseGreen {
-  0% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 
-/* Botão WhatsApp Flutuante */
 .floating-whatsapp-btn {
   box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -188,8 +217,123 @@ body {
   box-shadow: 0 14px 40px rgba(34, 197, 94, 0.6);
 }
 
-/* Modal Backdrop */
 .modal-overlay {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+/* ========================================================
+   PALCO 3D FLY-OVER (14.5s @ 60fps — 1440x1152)
+   Piso de Estúdio: #f9fbfb no centro, #f2f3f6 nos cantos
+   ======================================================== */
+body.flyover-active {
+  background: radial-gradient(circle at 50% 50%, #f9fbfb 0%, #f2f3f6 100%) !important;
+  overflow: hidden !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  user-select: none;
+}
+
+#flyoverViewport {
+  display: none;
+}
+
+body.flyover-active #flyoverViewport {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, #f9fbfb 0%, #f2f3f6 100%);
+  overflow: hidden;
+}
+
+#flyoverStage {
+  position: relative;
+  width: 1440px;
+  height: 1152px;
+  perspective: 1880px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #f9fbfb 0%, #f2f3f6 100%);
+  box-shadow: 0 30px 90px rgba(26, 33, 51, 0.14);
+  border-radius: 16px;
+}
+
+#flyoverCameraRig {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1440px;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+body.flyover-active #pageSheet {
+  width: 1440px;
+  border-radius: 24px;
+  box-shadow: 0 50px 140px rgba(26, 33, 51, 0.22), 0 14px 40px rgba(26, 33, 51, 0.12);
+  transform-style: preserve-3d;
+  will-change: transform, clip-path, border-radius;
+  overflow: visible;
+}
+
+/* Lente de Desfoque de Profundidade (Razor-thin DOF) */
+#flyoverDofNear,
+#flyoverDofFar {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 35;
+}
+#flyoverDofNear {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 64%, rgba(0,0,0,0.65) 82%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 64%, rgba(0,0,0,0.65) 82%, rgba(0,0,0,1) 100%);
+}
+#flyoverDofFar {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 22%, transparent 38%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 22%, transparent 38%, transparent 100%);
+}
+
+/* End Card Overlay (9.97s - 14.5s) */
+#flyoverEndCard {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.endcard-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(12px);
+  will-change: opacity, transform, filter;
+}
+
+/* Floating Logo Tiles Layer in Fly-Over */
+.flyover-floating-tile {
+  position: absolute;
+  border-radius: 22px;
+  background: #FFFFFF;
+  border: 2px solid rgba(197, 160, 89, 0.65);
+  box-shadow: 0 24px 48px rgba(26, 33, 51, 0.26);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 48;
+  will-change: transform, width, height, opacity, filter;
+}
+.flyover-floating-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
