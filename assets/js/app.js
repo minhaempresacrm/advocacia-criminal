@@ -1,11 +1,6 @@
 /**
  * APP.JS — DRA. NATHALIA LISBOA (ADVOCACIA CRIMINAL & DIREITO DO CONSUMIDOR)
- * Inclui:
- * 1. Motor Parallax 3D & Partículas Douradas no Hero
- * 2. Elevação 3D Dinâmica de Camadas [data-layer] na Rolagem
- * 3. Motor Determinístico 3D Fly-Over (14.5s @ 60fps — seek(t))
- * 4. Triagem WhatsApp Oficial (21) 98180-1373 (Criminal & Consumidor)
- * 5. Simulador de Paridade Processual & Áudio Imersivo Web Audio API
+ * Versão Otimizada 60fps + GSAP ScrollTrigger Scrollytelling + Fly-Over 3D (14.5s)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,16 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initHeroParallax();
   initParticleCanvas();
-  initScrollLayerLift();
   initEmergencyModal();
   initBalanceSlider();
   initAudioAmbience();
   initMobileMenu();
+  initScrollytelling();
   initFlyoverEngine();
 });
 
 /* ========================================================
-   1. PARALLAX DO HERO & MOVIMENTO 3D
+   1. PARALLAX LEVE DO HERO (PAUSA QUANDO FORA DA TELA)
    ======================================================== */
 function initHeroParallax() {
   const heroSection = document.getElementById('hero');
@@ -39,154 +34,462 @@ function initHeroParallax() {
   let mouseY = 0;
   let currentX = 0;
   let currentY = 0;
+  let isHeroVisible = true;
+  let rafId = null;
 
-  window.addEventListener('mousemove', (e) => {
-    if (document.body.classList.contains('flyover-active')) return;
-    const rect = heroSection.getBoundingClientRect();
-    if (e.clientY < rect.bottom && e.clientY > rect.top) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      isHeroVisible = entries[0].isIntersecting;
+      if (!isHeroVisible && rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    },
+    { threshold: 0.05 }
+  );
+  observer.observe(heroSection);
+
+  function scheduleLoop() {
+    if (!rafId && isHeroVisible && !document.body.classList.contains('flyover-active')) {
+      rafId = requestAnimationFrame(renderLoop);
+    }
+  }
+
+  window.addEventListener(
+    'mousemove',
+    (e) => {
+      if (!isHeroVisible || document.body.classList.contains('flyover-active')) return;
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       mouseX = (e.clientX - centerX) / centerX;
       mouseY = (e.clientY - centerY) / centerY;
-    }
-  });
+      scheduleLoop();
+    },
+    { passive: true }
+  );
 
   function renderLoop() {
-    if (!document.body.classList.contains('flyover-active')) {
-      currentX += (mouseX - currentX) * 0.06;
-      currentY += (mouseY - currentY) * 0.06;
+    rafId = null;
+    if (!isHeroVisible || document.body.classList.contains('flyover-active')) return;
 
-      const rotY = currentX * 16;
-      const rotX = -currentY * 16;
-      const transX = currentX * 22;
-      const transY = currentY * 18;
+    const dx = mouseX - currentX;
+    const dy = mouseY - currentY;
+    currentX += dx * 0.08;
+    currentY += dy * 0.08;
 
-      heroObject.style.transform = `translate3d(${transX}px, ${transY}px, 60px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+    const rotY = currentX * 10;
+    const rotX = -currentY * 10;
+    const transX = currentX * 14;
+    const transY = currentY * 12;
 
-      if (layerBack) layerBack.style.transform = `translate3d(${-currentX * 14}px, ${-currentY * 10}px, -40px)`;
-      if (layerMid) layerMid.style.transform = `translate3d(${currentX * 10}px, ${currentY * 8}px, 0px)`;
-      if (layerFront) layerFront.style.transform = `translate3d(${currentX * 20}px, ${currentY * 15}px, 30px)`;
+    heroObject.style.transform = `translate3d(${transX.toFixed(1)}px, ${transY.toFixed(1)}px, 0) rotateY(${rotY.toFixed(1)}deg) rotateX(${rotX.toFixed(1)}deg)`;
+    if (layerBack) layerBack.style.transform = `translate3d(${(-currentX * 10).toFixed(1)}px, ${(-currentY * 8).toFixed(1)}px, 0)`;
+    if (layerMid) layerMid.style.transform = `translate3d(${(currentX * 7).toFixed(1)}px, ${(currentY * 5).toFixed(1)}px, 0)`;
+    if (layerFront) layerFront.style.transform = `translate3d(${(currentX * 13).toFixed(1)}px, ${(currentY * 10).toFixed(1)}px, 0)`;
+
+    if (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002) {
+      rafId = requestAnimationFrame(renderLoop);
     }
-    requestAnimationFrame(renderLoop);
   }
-
-  requestAnimationFrame(renderLoop);
 }
 
 /* ========================================================
-   2. CANVAS DE PARTÍCULAS DOURADAS COM PROFUNDIDADE
+   2. CANVAS DE PARTÍCULAS ULTRA-LEVE (SPRITES PRÉ-RENDERIZADOS)
+   Zero ctx.filter / shadowBlur por frame — Roda liso a 60fps
    ======================================================== */
 function initParticleCanvas() {
   const canvas = document.getElementById('heroParticles');
-  if (!canvas) return;
+  const heroSection = document.getElementById('hero');
+  if (!canvas || !heroSection) return;
 
-  const ctx = canvas.getContext('2d');
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let width = (canvas.width = heroSection.offsetWidth || window.innerWidth);
+  let height = (canvas.height = heroSection.offsetHeight || window.innerHeight);
+  let isVisible = true;
+  let rafId = null;
 
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
+  // Pré-renderiza 2 sprites leves em canvas offscreen para evitar blur em tempo real
+  function createGlowSprite(radius, colorHex) {
+    const off = document.createElement('canvas');
+    const size = radius * 4;
+    off.width = size;
+    off.height = size;
+    const octx = off.getContext('2d');
+    const grad = octx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    grad.addColorStop(0, colorHex);
+    grad.addColorStop(0.45, colorHex.replace('1)', '0.45)'));
+    grad.addColorStop(1, colorHex.replace('1)', '0)'));
+    octx.fillStyle = grad;
+    octx.beginPath();
+    octx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    octx.fill();
+    return off;
+  }
 
+  const spriteGold = createGlowSprite(6, 'rgba(197, 160, 89, 1)');
+  const spriteLight = createGlowSprite(8, 'rgba(243, 229, 171, 1)');
+
+  window.addEventListener(
+    'resize',
+    () => {
+      width = canvas.width = heroSection.offsetWidth || window.innerWidth;
+      height = canvas.height = heroSection.offsetHeight || window.innerHeight;
+    },
+    { passive: true }
+  );
+
+  const count = window.innerWidth < 768 ? 14 : 26;
   const particles = [];
-  const particleCount = window.innerWidth < 768 ? 32 : 70;
-
-  for (let i = 0; i < particleCount; i++) {
+  for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 3.4 + 0.8,
-      speedX: (Math.random() - 0.5) * 0.35,
-      speedY: (Math.random() - 0.5) * 0.35 - 0.18,
-      opacity: Math.random() * 0.65 + 0.2,
-      blur: Math.random() > 0.6 ? 4 : 0,
-      pulse: Math.random() * Math.PI,
-      goldTone: Math.random() > 0.4 ? 'rgba(197, 160, 89, ' : 'rgba(243, 229, 171, '
+      size: Math.random() * 10 + 6,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.35 - 0.1,
+      alpha: Math.random() * 0.45 + 0.2,
+      sprite: i % 3 === 0 ? spriteLight : spriteGold
     });
   }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      isVisible = entries[0].isIntersecting;
+      if (isVisible && !rafId) {
+        rafId = requestAnimationFrame(animateParticles);
+      } else if (!isVisible && rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    },
+    { threshold: 0.02 }
+  );
+  observer.observe(heroSection);
 
   function animateParticles() {
+    if (!isVisible || document.body.classList.contains('flyover-active')) {
+      rafId = null;
+      return;
+    }
+
     ctx.clearRect(0, 0, width, height);
-    particles.forEach((p) => {
-      p.x += p.speedX;
-      p.y += p.speedY;
-      p.pulse += 0.02;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
 
-      if (p.x < 0) p.x = width;
-      if (p.x > width) p.x = 0;
-      if (p.y < 0) p.y = height;
-      if (p.y > height) p.y = 0;
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+      if (p.y < -20) p.y = height + 20;
 
-      const dynamicOpacity = Math.sin(p.pulse) * 0.25 + p.opacity;
-
-      ctx.save();
-      if (p.blur > 0) ctx.filter = `blur(${p.blur}px)`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.goldTone + Math.max(0.1, dynamicOpacity) + ')';
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#C5A059';
-      ctx.fill();
-      ctx.restore();
-    });
-    requestAnimationFrame(animateParticles);
+      ctx.globalAlpha = p.alpha;
+      ctx.drawImage(p.sprite, p.x, p.y, p.size, p.size);
+    }
+    ctx.globalAlpha = 1;
+    rafId = requestAnimationFrame(animateParticles);
   }
 
-  animateParticles();
+  rafId = requestAnimationFrame(animateParticles);
 }
 
 /* ========================================================
-   3. ELEVAÇÃO 3D DAS CAMADAS [data-layer] NA ROLAGEM NORMAL
+   3. GSAP + SCROLLTRIGGER SCROLLYTELLING (DESKTOP >= 1024px)
+      + ROLAGEM FLUIDA COM REVELAÇÕES LEVES NO MOBILE
    ======================================================== */
-function initScrollLayerLift() {
-  const layers = document.querySelectorAll('[data-layer]');
-  if (!layers.length) return;
+function initScrollytelling() {
+  if (!window.gsap || !window.ScrollTrigger) return;
 
-  function updateLayersOnScroll() {
-    if (document.body.classList.contains('flyover-active')) return;
-    const vh = window.innerHeight;
-    const centerLine = vh * 0.52;
-
-    layers.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      const elCenter = rect.top + rect.height / 2;
-      const dist = Math.abs(elCenter - centerLine);
-      const maxRange = vh * 0.55;
-
-      if (dist < maxRange) {
-        const factor = Math.pow(1 - dist / maxRange, 2);
-        const type = el.getAttribute('data-layer');
-        let z = 24 * factor;
-        let deg = 8 * factor;
-
-        if (type === 'chip') {
-          z = 52 * factor;
-          deg = 22 * factor;
-        } else if (type === 'testimonial') {
-          z = 88 * factor;
-          deg = 24 * factor;
-          el.style.borderBottomWidth = `${Math.round(10 + 24 * factor)}px`;
-        } else if (type === 'photo-card') {
-          z = 68 * factor;
-          deg = 18 * factor;
-        }
-
-        const sx = (0.10 * z).toFixed(1);
-        const sy = (4 + 0.36 * z).toFixed(1);
-        const sblur = (7 + 0.5 * z).toFixed(1);
-
-        el.style.transform = `perspective(1200px) translate3d(0, ${(-z * 0.18).toFixed(1)}px, ${z.toFixed(1)}px) rotateX(${deg.toFixed(1)}deg)`;
-        el.style.boxShadow = `${sx}px ${sy}px ${sblur}px rgba(26, 33, 51, 0.26)`;
-      } else {
-        el.style.transform = '';
-        el.style.boxShadow = '';
-      }
-    });
+  gsap.registerPlugin(ScrollTrigger);
+  if (window.ScrollToPlugin) {
+    gsap.registerPlugin(ScrollToPlugin);
   }
 
-  window.addEventListener('scroll', updateLayersOnScroll, { passive: true });
-  updateLayersOnScroll();
+  const headerEl = document.getElementById('siteHeader');
+  const getHeaderH = () => (headerEl ? headerEl.offsetHeight : 104);
+
+  // Mapa de referências ScrollTrigger para recalibrar cliques do menu superior
+  const triggersMap = {};
+
+  const mm = gsap.matchMedia();
+
+  // ------------------------------------------------------
+  // DESKTOP (>= 1024px): PINNING & SCROLLYTELLING COMPLETO
+  // ------------------------------------------------------
+  mm.add('(min-width: 1024px)', () => {
+    // 1. HERO PINNING (~120vh) + CORTINA PELA SEÇÃO "A ADVOGADA"
+    const heroTitleStack = document.getElementById('heroTitleStack');
+    const heroChips = document.getElementById('heroChips');
+    const heroMetrics = document.getElementById('heroMetrics');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const heroLinksRow = document.getElementById('heroLinksRow');
+
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hero',
+        start: () => `top ${getHeaderH()}px`,
+        end: '+=120%',
+        pin: true,
+        pinSpacing: false,
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    if (heroTitleStack) {
+      heroTl.to(heroTitleStack, { scale: 1.08, ease: 'none' }, 0);
+    }
+    if (heroChips) {
+      heroTl.to(heroChips, { opacity: 0, y: -28, ease: 'none' }, 0);
+    }
+    if (heroMetrics) {
+      heroTl.to(heroMetrics, { opacity: 0, y: 24, ease: 'none' }, 0.05);
+    }
+    if (heroSubtitle) {
+      heroTl.to(heroSubtitle, { opacity: 0.25, y: -10, ease: 'none' }, 0.15);
+    }
+    if (heroLinksRow) {
+      heroTl.to(heroLinksRow, { opacity: 0, ease: 'none' }, 0.15);
+    }
+    triggersMap['#hero'] = heroTl.scrollTrigger;
+
+    // 2. SEÇÃO "A ADVOGADA" (#sobre): COLUNA ESQUERDA FIXA + DESTAQUE PROGRESSIVO
+    const sobreLeftPin = document.getElementById('sobreLeftPin');
+    const sobreBlocks = gsap.utils.toArray('.js-sobre-block');
+
+    if (sobreLeftPin) {
+      ScrollTrigger.create({
+        trigger: '#sobreGrid',
+        start: () => `top ${getHeaderH() + 24}px`,
+        end: () => {
+          const gridEl = document.getElementById('sobreGrid');
+          const pinEl = document.getElementById('sobreLeftPin');
+          if (!gridEl || !pinEl) return '+=300';
+          const travel = Math.max(80, gridEl.offsetHeight - pinEl.offsetHeight);
+          return `+=${travel}`;
+        },
+        pin: '#sobreLeftPin',
+        pinSpacing: false,
+        invalidateOnRefresh: true
+      });
+    }
+
+    sobreBlocks.forEach((block) => {
+      gsap.fromTo(
+        block,
+        { opacity: 0.4, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          ease: 'power1.out',
+          scrollTrigger: {
+            trigger: block,
+            start: 'top 78%',
+            end: 'top 38%',
+            scrub: 1
+          }
+        }
+      );
+    });
+
+    // 3. SEÇÃO "FRENTES DE ATUAÇÃO" (#areas): PIN 100VH + TRILHO HORIZONTAL EM 2 ATOS
+    const areasTrack = document.getElementById('areasTrack');
+    const areasProgressBar = document.getElementById('areasProgressBar');
+    const areasActLabel = document.getElementById('areasActLabel');
+    const areasActBadge = document.getElementById('areasActBadge');
+
+    if (areasTrack) {
+      const areasTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#areas',
+          start: () => `top ${getHeaderH()}px`,
+          end: '+=200%',
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (!areasActLabel) return;
+            if (self.progress >= 0.5) {
+              areasActLabel.textContent = 'ATO II / II • DIREITO DO CONSUMIDOR';
+              if (areasActBadge) {
+                areasActBadge.classList.remove('bg-crimson/70');
+                areasActBadge.classList.add('bg-emerald-950/90');
+              }
+            } else {
+              areasActLabel.textContent = 'ATO I / II • ADVOCACIA CRIMINAL';
+              if (areasActBadge) {
+                areasActBadge.classList.remove('bg-emerald-950/90');
+                areasActBadge.classList.add('bg-crimson/70');
+              }
+            }
+          }
+        }
+      });
+
+      // Pequena pausa no Ato I -> deslizamento suave para Ato II -> pausa no Ato II
+      areasTl
+        .to(areasTrack, { xPercent: 0, duration: 0.18, ease: 'none' })
+        .to(areasTrack, { xPercent: -50, duration: 0.64, ease: 'power1.inOut' })
+        .to(areasTrack, { xPercent: -50, duration: 0.18, ease: 'none' });
+
+      if (areasProgressBar) {
+        areasTl.fromTo(
+          areasProgressBar,
+          { width: '15%' },
+          { width: '100%', duration: 1.0, ease: 'none' },
+          0
+        );
+      }
+
+      triggersMap['#areas'] = areasTl.scrollTrigger;
+    }
+
+    // 4. SEÇÃO "O RITO ESTRATÉGICO" (#rito / #forca): PIN ~180VH + PASSOS SEQUENCIAIS
+    const ritoSteps = [
+      document.getElementById('ritoStep1'),
+      document.getElementById('ritoStep2'),
+      document.getElementById('ritoStep3')
+    ].filter(Boolean);
+
+    if (ritoSteps.length === 3) {
+      const setActiveStep = (activeIdx) => {
+        ritoSteps.forEach((stepEl, idx) => {
+          if (idx === activeIdx) {
+            stepEl.classList.add('is-active');
+            stepEl.style.opacity = '1';
+          } else {
+            stepEl.classList.remove('is-active');
+            stepEl.style.opacity = '0.32';
+          }
+        });
+      };
+
+      const ritoSt = ScrollTrigger.create({
+        trigger: '#rito',
+        start: () => `top ${getHeaderH()}px`,
+        end: '+=180%',
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          if (p < 0.34) {
+            setActiveStep(0);
+          } else if (p < 0.68) {
+            setActiveStep(1);
+          } else {
+            setActiveStep(2);
+          }
+        }
+      });
+
+      setActiveStep(0);
+      triggersMap['#rito'] = ritoSt;
+      triggersMap['#forca'] = ritoSt;
+    }
+
+    // 5. STACKING SECTION ("RECONHECIMENTO" -> CTA FINAL & RODAPÉ SOBEM POR CIMA)
+    const depoimentoInner = document.getElementById('depoimentoInner');
+    const depoSt = ScrollTrigger.create({
+      trigger: '#depoimento',
+      start: () => `top ${getHeaderH()}px`,
+      end: '+=100%',
+      pin: true,
+      pinSpacing: false,
+      invalidateOnRefresh: true
+    });
+    triggersMap['#depoimento'] = depoSt;
+
+    if (depoimentoInner) {
+      gsap.to(depoimentoInner, {
+        scale: 0.96,
+        opacity: 0.42,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#closingStack',
+          start: 'top bottom',
+          end: () => `top ${getHeaderH() + 60}px`,
+          scrub: 1,
+          invalidateOnRefresh: true
+        }
+      });
+    }
+
+    return () => {
+      Object.keys(triggersMap).forEach((k) => delete triggersMap[k]);
+    };
+  });
+
+  // ------------------------------------------------------
+  // MOBILE (< 1024px): ROLAGEM FLUIDA SEM PINNING + REVEAL LEVE
+  // ------------------------------------------------------
+  mm.add('(max-width: 1023px)', () => {
+    const mobileItems = gsap.utils.toArray('.feature-card, .js-sobre-block, .rito-step, .testimonial-3d-card');
+    mobileItems.forEach((el) => {
+      el.style.opacity = '1';
+      gsap.from(el, {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+  });
+
+  // ------------------------------------------------------
+  // RECALIBRAÇÃO DOS LINKS ÂNCORA DO MENU SUPERIOR
+  // ------------------------------------------------------
+  document.querySelectorAll('.js-nav-anchor').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || !href.startsWith('#')) return;
+      const targetEl = document.querySelector(href);
+      if (!targetEl) return;
+
+      e.preventDefault();
+
+      // Fecha menu mobile se estiver aberto
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+      }
+
+      const headerH = getHeaderH();
+      let destY = 0;
+
+      if (href === '#hero') {
+        destY = 0;
+      } else if (triggersMap[href]) {
+        destY = triggersMap[href].start;
+      } else {
+        const rectTop = targetEl.getBoundingClientRect().top + window.scrollY;
+        destY = Math.max(0, rectTop - headerH);
+      }
+
+      if (window.ScrollToPlugin) {
+        gsap.to(window, {
+          duration: 0.85,
+          scrollTo: { y: destY, autoKill: true },
+          ease: 'power2.inOut'
+        });
+      } else {
+        window.scrollTo({ top: destY, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Recalcula ScrollTrigger após carregamento completo de imagens e fontes
+  const safeRefresh = () => {
+    ScrollTrigger.refresh();
+  };
+  window.addEventListener('load', safeRefresh);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(safeRefresh);
+  }
 }
 
 /* ========================================================
@@ -231,11 +534,9 @@ function initEmergencyModal() {
   });
 
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
-
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
@@ -248,7 +549,6 @@ function initEmergencyModal() {
       const reason = document.getElementById('emergencyReason')?.value || 'Consultoria Jurídica';
       const details = document.getElementById('caseDetails')?.value || 'Solicito análise do meu caso.';
 
-      // Número Oficial da Dra. Nathalia Lisboa (OAB/RJ 219.544)
       const whatsappNumber = '5521981801373';
       const message = encodeURIComponent(
         `⚖️ *ATENDIMENTO JURÍDICO — DRA. NATHALIA LISBOA*\n\n` +
@@ -266,7 +566,7 @@ function initEmergencyModal() {
 }
 
 /* ========================================================
-   5. SLIDER DA BALANÇA DA JUSTIÇA (SEÇÃO 3)
+   5. SLIDER DA BALANÇA DA JUSTIÇA (100% INTERATIVO)
    ======================================================== */
 function initBalanceSlider() {
   const balanceRange = document.getElementById('balanceRange');
@@ -394,7 +694,6 @@ function initMobileMenu() {
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
-  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
   if (!mobileMenuBtn || !mobileMenu) return;
 
@@ -404,18 +703,11 @@ function initMobileMenu() {
 
   mobileMenuBtn.addEventListener('click', toggleMenu);
   if (closeMobileMenuBtn) closeMobileMenuBtn.addEventListener('click', toggleMenu);
-  mobileLinks.forEach((link) => {
-    link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-  });
 }
 
 /* ========================================================
    8. MOTOR DETERMINÍSTICO 3D FLY-OVER (14.5s @ 60fps)
-      Implementação fiel de <direction>, <structure> e <build>
-      - Sem cortes, câmera contínua única (seek(t))
-      - Piso #f9fbfb centro / #f2f3f6 cantos
-      - 0-8.2s Flight | 7.75-9.25s Rise | 9.25-9.47s Overhead
-      - 9.47-9.97s Dive | 9.97-14.5s End Title Card (Geist 500 + Instrument Serif)
+      Mantido 100% intacto e limpo de pin-spacers GSAP ao clonar
    ======================================================== */
 function initFlyoverEngine() {
   const startBtns = document.querySelectorAll('.js-start-flyover');
@@ -443,9 +735,8 @@ function initFlyoverEngine() {
   let soundFlags = { w1: false, w2: false, hit: false };
 
   const DURATION = 14.5;
-  const CRUISE_SPEED = 770; // px/s conforme especificação
+  const CRUISE_SPEED = 770;
 
-  // Integração determinística da curva de velocidade da câmera (0 a 8.5s)
   function getShareOfCruise(t) {
     if (t <= 0) return 0;
     if (t < 0.6) return 0.5 * (t / 0.6);
@@ -457,7 +748,7 @@ function initFlyoverEngine() {
   }
 
   function integrateLookAtY(t) {
-    const startY = 390; // Centro da metade superior do Hero
+    const startY = 390;
     const steps = 160;
     const clampedT = Math.min(Math.max(t, 0), 8.65);
     const dt = clampedT / steps;
@@ -487,17 +778,48 @@ function initFlyoverEngine() {
     stage.style.transform = `scale(${scale.toFixed(4)})`;
   }
 
-  window.addEventListener('resize', fitStageToWindow);
+  window.addEventListener('resize', fitStageToWindow, { passive: true });
+
+  // Remove wrappers pin-spacer e estilos inline GSAP da cópia clonada do Fly-Over
+  function sanitizeCloneForFlyover(cloneRoot) {
+    cloneRoot.querySelectorAll('.pin-spacer').forEach((spacer) => {
+      const parent = spacer.parentNode;
+      while (spacer.firstChild) {
+        parent.insertBefore(spacer.firstChild, spacer);
+      }
+      parent.removeChild(spacer);
+    });
+
+    const resetSelectors = '#hero, #heroTitleStack, #heroChips, #heroMetrics, #heroSubtitle, #heroLinksRow, #sobreLeftPin, .js-sobre-block, #areas, #areasTrack, #rito, #depoimento, #depoimentoInner';
+    cloneRoot.querySelectorAll(resetSelectors).forEach((el) => {
+      el.removeAttribute('style');
+    });
+
+    // Garante que todos os cards apareçam limpos na tira da página durante o Fly-Over
+    const track = cloneRoot.querySelector('#areasTrack');
+    if (track) {
+      track.className = 'flex flex-col gap-6 w-full';
+      const act1 = cloneRoot.querySelector('#areasAct1');
+      const act2 = cloneRoot.querySelector('#areasAct2');
+      if (act1) act1.className = 'w-full grid grid-cols-3 gap-6';
+      if (act2) act2.className = 'w-full grid grid-cols-3 gap-6';
+    }
+    const areasSec = cloneRoot.querySelector('#areas');
+    if (areasSec) {
+      areasSec.classList.remove('lg:h-[calc(100vh-106px)]');
+      areasSec.classList.add('py-20');
+    }
+  }
 
   function openFlyover(initialTime = 0, autoPlay = true) {
     if (!isFlyoverOpen) {
       isFlyoverOpen = true;
       document.body.classList.add('flyover-active');
 
-      // Clona a página inteira para o palco 3D sem alterar o DOM principal
       pageMount.innerHTML = '';
       pageClone = mainPageContent.cloneNode(true);
       pageClone.id = 'pageSheet';
+      sanitizeCloneForFlyover(pageClone);
       pageMount.appendChild(pageClone);
 
       if (window.lucide) window.lucide.createIcons();
@@ -533,7 +855,6 @@ function initFlyoverEngine() {
     if (window.lucide) window.lucide.createIcons();
   }
 
-  // Função Determinística Principal seek(t)
   function seekFlyover(t) {
     currentTime = Math.max(0, Math.min(DURATION, t));
     if (scrubber) scrubber.value = currentTime.toFixed(2);
@@ -541,32 +862,26 @@ function initFlyoverEngine() {
 
     if (!pageClone) return;
 
-    // 1. Cálculo de Tilt (56° -> 0° entre 8.15s e 8.95s)
     const flattenProgress = smoothstep(8.15, 8.95, currentTime);
     const tiltDeg = 56 * (1 - flattenProgress);
 
-    // 2. Cálculo de Escala / Distância e Ponto de Olhar (Look-At Y)
     let lookAtY = integrateLookAtY(currentTime);
-    const maxFlightY = integrateLookAtY(8.3);
     const pageCenterY = totalPageHeight * 0.5;
 
-    // Transição do Rise (7.75s - 9.25s) para mostrar a página inteira como uma tira centralizada
     const riseProgress = smoothstep(7.75, 9.25, currentTime);
-    const overheadScale = (1152 - 84) / Math.max(totalPageHeight, 2800); // Borda inferior a 42px do fundo
+    const overheadScale = (1152 - 84) / Math.max(totalPageHeight, 2800);
     const flightScale = 1360 / (1360 + (1700 - 1360) * smoothstep(0, 8.2, currentTime));
 
     let currentScale = flightScale * Math.pow(overheadScale / flightScale, riseProgress);
     lookAtY = lookAtY * (1 - riseProgress) + pageCenterY * riseProgress;
 
-    // 9.25s - 9.47s: Overhead creeping 3.5% closer
     if (currentTime > 9.25) {
       const creep1 = smoothstep(9.25, 9.47, currentTime);
       currentScale *= 1 + 0.035 * creep1;
     }
 
-    // 9.47s - 9.97s: Dive para o Hero Card (1018px de largura = escala 1018/1440 = 0.7069, topo em y = 283)
     const diveProgress = easeInOutQuad((currentTime - 9.47) / 0.50);
-    const heroCardScale = 1018 / 1440; // ~0.7069
+    const heroCardScale = 1018 / 1440;
     const heroCardHoldScale = heroCardScale * (1 + 0.02 * smoothstep(10.6, 14.5, currentTime));
 
     let sheetOffsetY = 0;
@@ -580,18 +895,16 @@ function initFlyoverEngine() {
         currentScale = heroCardHoldScale;
       }
 
-      // Topo da página desce para y = 283 no final do Dive
       const dropProgress = smoothstep(9.62, 9.97, currentTime);
       const topYInStage = -576 + 283 * dropProgress;
       lookAtY = pageCenterY * (1 - diveProgress);
       sheetOffsetY = topYInStage / currentScale;
 
-      cornerRadius = 24 + 14 * diveProgress; // 24px -> 38px corners
-      const heroHeight = 860;
+      cornerRadius = 24 + 14 * diveProgress;
+      const heroHeight = 820;
       heroClipBottom = totalPageHeight - (totalPageHeight - heroHeight) * diveProgress;
     }
 
-    // Aplica transformação 3D da câmera no Rig e na Folha da Página
     if (currentTime < 9.47) {
       cameraRig.style.transform = `scale(${currentScale.toFixed(4)}) rotateX(${tiltDeg.toFixed(2)}deg) translate3d(-720px, ${(-lookAtY).toFixed(1)}px, 0px)`;
     } else {
@@ -606,12 +919,10 @@ function initFlyoverEngine() {
       pageClone.style.clipPath = `inset(0px 0px 0px 0px round 24px)`;
     }
 
-    // 3. Desfoque de Profundidade (DOF) - desaparece durante o Rise/Overhead/EndCard
     const dofOpacity = 1 - smoothstep(7.75, 8.85, currentTime);
     if (dofNear) dofNear.style.opacity = dofOpacity.toFixed(2);
     if (dofFar) dofFar.style.opacity = dofOpacity.toFixed(2);
 
-    // 4. Elevação 3D individual das peças [data-layer] conforme cruzam o foco
     const cloneLayers = pageClone.querySelectorAll('[data-layer]');
     cloneLayers.forEach((el) => {
       const layerType = el.getAttribute('data-layer');
@@ -637,7 +948,7 @@ function initFlyoverEngine() {
         rotX = 54 * p;
       } else if (layerType === 'testimonial' && currentTime >= 5.1 && currentTime <= 7.2) {
         const p = smoothstep(5.45, 6.1, currentTime) * (1 - smoothstep(6.6, 7.2, currentTime));
-        z = 22 + 90 * p; // 22px -> 112px
+        z = 22 + 90 * p;
         rotX = 30 * p;
         el.style.borderBottom = `${Math.round(8 + 26 * p)}px solid #FFFFFF`;
       } else if (focusFactor > 0.05) {
@@ -657,10 +968,7 @@ function initFlyoverEngine() {
       }
     });
 
-    // 5. Os 4 Logo Tiles Flutuantes (0.1s até 14.5s)
     updateFloatingTiles(currentTime);
-
-    // 6. End Title Card (10.02s - 14.5s)
     updateEndTitleCard(currentTime);
   }
 
@@ -673,8 +981,6 @@ function initFlyoverEngine() {
     ];
     if (!tiles[0]) return;
 
-    // 0.1 - 1.35s: Tiles sobem ao lado do botão Hero, crescem para 140-180px nos cantos superiores
-    // 1.2 - 2.4s: Acompanham e saem pelo topo; um passa na esquerda em 5.4s; no Dive (9.47s+) pousam nos cantos do Hero Card
     tiles.forEach((tile, idx) => {
       let x = 720 + (idx - 1.5) * 52;
       let y = 640;
@@ -698,7 +1004,6 @@ function initFlyoverEngine() {
         blur = idx > 1 ? 2.5 * lift : 0;
         opacity = 1 - driftOut;
       } else if (t >= 4.8 && t <= 6.1 && idx === 0) {
-        // 5.4s: Um logo tile passa pela borda esquerda próximo à lente e desfocado
         const p = (t - 4.8) / 1.3;
         x = 95;
         y = 1100 - p * 1250;
@@ -707,26 +1012,22 @@ function initFlyoverEngine() {
         rot = -18 + p * 25;
         opacity = Math.sin(p * Math.PI);
       } else if (t >= 9.47) {
-        // 9.47s - 14.5s: 2 tiles nos cantos superiores do Hero Card, 1 nítido na direita, 2 grandes desfocados nos cantos inferiores
         const enter = smoothstep(9.55, 10.05, t);
         const holdDrift = smoothstep(10.0, 14.5, t) * 10;
         opacity = enter;
         if (idx === 0) {
-          // Canto superior esquerdo do Hero Card
           x = 215 - holdDrift;
           y = 290 - holdDrift * 0.5;
           size = 110;
           rot = -10;
           blur = 0;
         } else if (idx === 1) {
-          // Nítido na borda direita do Hero Card
           x = 1235 + holdDrift;
           y = 430 + holdDrift * 0.6;
           size = 128;
           rot = 12;
           blur = 0;
         } else if (idx === 2) {
-          // Grande e suave no canto inferior esquerdo
           x = 120 - holdDrift;
           y = 980 + holdDrift;
           size = 240;
@@ -734,7 +1035,6 @@ function initFlyoverEngine() {
           blur = 18;
           opacity = enter * 0.75;
         } else {
-          // Grande e suave no canto inferior direito
           x = 1320 + holdDrift;
           y = 990 + holdDrift;
           size = 250;
@@ -765,7 +1065,6 @@ function initFlyoverEngine() {
       badgePill.style.transform = `translateY(${((1 - p) * 12).toFixed(1)}px)`;
     }
 
-    // 10.12s: Linha 1 em Geist 500 (74px), uma palavra a cada 0.06s
     line1Words.forEach((w, i) => {
       const start = 10.12 + i * 0.06;
       const p = smoothstep(start, start + 0.28, t);
@@ -774,7 +1073,6 @@ function initFlyoverEngine() {
       w.style.filter = `blur(${((1 - p) * 8).toFixed(1)}px)`;
     });
 
-    // 10.36s: Linha 2 em Instrument Serif Italic (82px, #8b8b92), uma palavra a cada 0.05s, subindo 16px de um blur de 12px em 0.34s
     line2Words.forEach((w, i) => {
       const start = 10.36 + i * 0.05;
       const p = smoothstep(start, start + 0.34, t);
@@ -818,7 +1116,6 @@ function initFlyoverEngine() {
 
   requestAnimationFrame(tick);
 
-  // Eventos de UI do Fly-Over
   startBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -856,10 +1153,8 @@ function initFlyoverEngine() {
     });
   });
 
-  // Expor API global seek(t) conforme especificação <build>
   window.seek = (t) => openFlyover(t, false);
 
-  // Suporte a parâmetros de URL (?flyover=1 ou ?t=1.6)
   const params = new URLSearchParams(window.location.search);
   if (params.has('t')) {
     const tVal = parseFloat(params.get('t')) || 0;

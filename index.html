@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,145 +37,147 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
-<body class="bg-obsidian text-slate-100 antialiased selection:bg-gold selection:text-obsidian">
+<body class="bg-obsidian text-slate-100 antialiased selection:bg-gold selection:text-obsidian overflow-x-clip">
 
   <!-- =========================================================
        CONTEÚDO PRINCIPAL DA PÁGINA (CLONADO NO PALCO 3D FLY-OVER)
        ========================================================= -->
-  <div id="mainPageContent" class="bg-obsidian">
+  <div id="mainPageContent" class="bg-obsidian overflow-x-clip">
 
-    <!-- BARRA DE ALERTA DO PLANTÃO 24H -->
-    <div class="bg-gradient-to-r from-crimson-dark via-crimson to-crimson-dark py-2.5 px-4 text-xs font-semibold text-gold-light text-center border-b border-gold/30 tracking-wider uppercase flex flex-wrap items-center justify-center gap-3">
-      <span class="inline-flex items-center gap-1.5 bg-red-600/90 text-white px-2.5 py-0.5 rounded-full text-[10px] animate-pulse">
-        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> PLANTÃO 24H
-      </span>
-      <span>Dra. Nathalia Lisboa (OAB/RJ 219.544) • Advocacia Criminalista & Direito do Consumidor</span>
-      <button class="js-start-flyover inline-flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-colors border border-gold/40">
-        <i data-lucide="clapperboard" class="w-3 h-3 text-gold"></i> Ver Fly-Over 3D (14.5s)
-      </button>
+    <!-- CABEÇALHO FIXO UNIFICADO (BARRA PLANTÃO 24H + MENU SUPERIOR) -->
+    <div id="siteHeader" class="sticky top-0 z-40">
+      <!-- Barra de Alerta do Plantão 24h -->
+      <div class="bg-gradient-to-r from-crimson-dark via-crimson to-crimson-dark py-2 px-4 text-[11px] sm:text-xs font-semibold text-gold-light text-center border-b border-gold/30 tracking-wider uppercase flex flex-wrap items-center justify-center gap-3">
+        <span class="inline-flex items-center gap-1.5 bg-red-600/90 text-white px-2.5 py-0.5 rounded-full text-[10px] animate-pulse">
+          <i data-lucide="shield-alert" class="w-3 h-3"></i> PLANTÃO 24H
+        </span>
+        <span>Dra. Nathalia Lisboa (OAB/RJ 219.544) • Advocacia Criminalista & Direito do Consumidor</span>
+        <button class="js-start-flyover inline-flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-colors border border-gold/40">
+          <i data-lucide="clapperboard" class="w-3 h-3 text-gold"></i> Ver Fly-Over 3D (14.5s)
+        </button>
+      </div>
+
+      <!-- Navbar de Prestígio -->
+      <header class="bg-obsidian/95 backdrop-blur-md border-b border-gold/15">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-[72px] flex items-center justify-between">
+          
+          <!-- Logo Oficial NL & Nome -->
+          <a href="#hero" class="js-nav-anchor flex items-center gap-3 group">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white p-0.5 border border-gold/60 shadow-md overflow-hidden flex items-center justify-center">
+              <img src="assets/img/logo-icon.jpg" alt="Logo NL Dra. Nathalia Lisboa" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+            </div>
+            <div>
+              <span class="font-display font-bold text-sm sm:text-base tracking-wider text-white block leading-tight">
+                DRA. NATHALIA LISBOA
+              </span>
+              <span class="text-[10px] tracking-[0.15em] text-gold uppercase block font-semibold">
+                Criminalista & Consumidor • OAB/RJ 219.544
+              </span>
+            </div>
+          </a>
+
+          <!-- Menu Desktop -->
+          <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
+            <a href="#sobre" class="js-nav-anchor hover:text-gold transition-colors">A Advogada</a>
+            <a href="#areas" class="js-nav-anchor hover:text-gold transition-colors">Criminal & Consumidor</a>
+            <a href="#rito" class="js-nav-anchor hover:text-gold transition-colors">O Rito Estratégico</a>
+            <a href="#forca" class="js-nav-anchor hover:text-gold transition-colors">Paridade de Armas</a>
+            <a href="#depoimento" class="js-nav-anchor hover:text-gold transition-colors">Reconhecimento</a>
+          </nav>
+
+          <!-- Ações: Áudio, Fly-Over 3D & WhatsApp -->
+          <div class="hidden sm:flex items-center gap-2.5">
+            <button id="audioToggle" title="Ativar ambiência sonora" class="p-2 rounded-full border border-gold/30 text-gold hover:border-gold hover:bg-gold/10 transition-all flex items-center justify-center">
+              <i id="audioIcon" data-lucide="volume-x" class="w-4 h-4"></i>
+            </button>
+
+            <button class="js-start-flyover border border-gold/50 bg-gold/10 hover:bg-gold/20 text-gold-light font-bold text-[11px] uppercase tracking-wider px-3.5 py-2.5 rounded-sm flex items-center gap-1.5 transition-all">
+              <i data-lucide="box" class="w-3.5 h-3.5 text-gold"></i>
+              Fly-Over 3D
+            </button>
+
+            <button class="js-open-emergency-modal bg-gradient-to-r from-gold via-gold-light to-gold text-obsidian font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded-sm hover:brightness-110 shadow-md flex items-center gap-1.5 transition-all">
+              <i data-lucide="phone-call" class="w-3.5 h-3.5 text-obsidian"></i>
+              (21) 98180-1373
+            </button>
+          </div>
+
+          <!-- Botão Menu Mobile -->
+          <button id="mobileMenuBtn" class="lg:hidden text-gold p-2">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+
+        </div>
+
+        <!-- Gaveta Mobile -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-obsidian border-b border-gold/20 px-6 py-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gold/15 mb-2">
+            <span class="font-display font-bold text-sm text-gold">Menu — Dra. Nathalia Lisboa</span>
+            <button id="closeMobileMenuBtn" class="text-slate-400 hover:text-white p-1">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <a href="#sobre" class="js-nav-anchor mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">A Advogada</a>
+          <a href="#areas" class="js-nav-anchor mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Criminal & Consumidor</a>
+          <a href="#rito" class="js-nav-anchor mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">O Rito Estratégico</a>
+          <a href="#forca" class="js-nav-anchor mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Paridade de Armas</a>
+          <a href="#depoimento" class="js-nav-anchor mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Reconhecimento</a>
+          <div class="pt-4 border-t border-gold/20 flex flex-col gap-3">
+            <button class="js-start-flyover w-full border border-gold text-gold-light font-bold py-3 uppercase tracking-wider text-xs rounded-sm">
+              🎬 Assistir Apresentação Fly-Over 3D (14.5s)
+            </button>
+            <button class="js-open-emergency-modal w-full bg-gold text-obsidian font-bold py-3 uppercase tracking-wider text-xs rounded-sm">
+              Falar com a Dra. Nathalia (21) 98180-1373
+            </button>
+          </div>
+        </div>
+      </header>
     </div>
 
-    <!-- NAVBAR DE PRESTÍGIO -->
-    <header class="sticky top-0 z-40 bg-obsidian/90 backdrop-blur-md border-b border-gold/15 transition-all">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        
-        <!-- Logo Oficial NL & Nome -->
-        <a href="#hero" class="flex items-center gap-3.5 group">
-          <div class="w-12 h-12 rounded-lg bg-white p-0.5 border border-gold/60 shadow-lg shadow-gold/15 overflow-hidden flex items-center justify-center">
-            <img src="assets/img/logo-icon.jpg" alt="Logo NL Dra. Nathalia Lisboa" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-          </div>
-          <div>
-            <span class="font-display font-bold text-base sm:text-lg tracking-wider text-white block leading-tight">
-              DRA. NATHALIA LISBOA
-            </span>
-            <span class="text-[11px] tracking-[0.16em] text-gold uppercase block font-semibold">
-              Criminalista & Consumidor • OAB/RJ 219.544
-            </span>
-          </div>
-        </a>
-
-        <!-- Menu Desktop -->
-        <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
-          <a href="#sobre" class="hover:text-gold transition-colors">A Advogada</a>
-          <a href="#areas" class="hover:text-gold transition-colors">Criminal & Consumidor</a>
-          <a href="#rito" class="hover:text-gold transition-colors">O Rito Estratégico</a>
-          <a href="#forca" class="hover:text-gold transition-colors">Paridade de Armas</a>
-          <a href="#depoimento" class="hover:text-gold transition-colors">Reconhecimento</a>
-        </nav>
-
-        <!-- Ações: Fly-Over 3D, Áudio & WhatsApp -->
-        <div class="hidden sm:flex items-center gap-3">
-          <button id="audioToggle" title="Ativar ambiência sonora" class="p-2.5 rounded-full border border-gold/30 text-gold hover:border-gold hover:bg-gold/10 transition-all flex items-center justify-center">
-            <i id="audioIcon" data-lucide="volume-x" class="w-4 h-4"></i>
-          </button>
-
-          <button class="js-start-flyover border border-gold/50 bg-gold/10 hover:bg-gold/20 text-gold-light font-bold text-xs uppercase tracking-wider px-4 py-3 rounded-sm flex items-center gap-2 transition-all">
-            <i data-lucide="box" class="w-4 h-4 text-gold"></i>
-            Fly-Over 3D
-          </button>
-
-          <button class="js-open-emergency-modal bg-gradient-to-r from-gold via-gold-light to-gold text-obsidian font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-sm hover:brightness-110 shadow-lg shadow-gold/20 flex items-center gap-2 transition-all">
-            <i data-lucide="phone-call" class="w-4 h-4 text-obsidian"></i>
-            (21) 98180-1373
-          </button>
-        </div>
-
-        <!-- Botão Menu Mobile -->
-        <button id="mobileMenuBtn" class="lg:hidden text-gold p-2">
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
-
-      </div>
-
-      <!-- Gaveta Mobile -->
-      <div id="mobileMenu" class="hidden lg:hidden bg-obsidian border-b border-gold/20 px-6 py-6 space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-gold/15 mb-2">
-          <span class="font-display font-bold text-sm text-gold">Menu — Dra. Nathalia Lisboa</span>
-          <button id="closeMobileMenuBtn" class="text-slate-400 hover:text-white p-1">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
-        <a href="#sobre" class="mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">A Advogada (LinkedIn & Bio)</a>
-        <a href="#areas" class="mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Atuação Criminal & Consumidor</a>
-        <a href="#rito" class="mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">O Rito Estratégico</a>
-        <a href="#forca" class="mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Simulador da Balança</a>
-        <a href="#depoimento" class="mobile-nav-link block text-base font-display text-slate-200 hover:text-gold">Depoimentos</a>
-        <div class="pt-4 border-t border-gold/20 flex flex-col gap-3">
-          <button class="js-start-flyover w-full border border-gold text-gold-light font-bold py-3 uppercase tracking-wider text-xs rounded-sm">
-            🎬 Assistir Apresentação Fly-Over 3D (14.5s)
-          </button>
-          <button class="js-open-emergency-modal w-full bg-gold text-obsidian font-bold py-3 uppercase tracking-wider text-xs rounded-sm">
-            Falar com a Dra. Nathalia (21) 98180-1373
-          </button>
-        </div>
-      </div>
-    </header>
-
     <!-- ==========================================
-         SEÇÃO 1: HERO MONUMENTAL COM 3D PARALLAX
-         Inclui: Chips 3D, Mockup Central Nítido e os 4 Logo Tiles ao lado do botão
+         SEÇÃO 1: HERO MONUMENTAL (PINNED ~120VH + CORTINA POR BAIXO)
          ========================================== -->
-    <section id="hero" class="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-obsidian pt-10 pb-20 perspective-container">
+    <section id="hero" class="relative z-10 min-h-[calc(100vh-106px)] flex items-center justify-center overflow-x-clip bg-obsidian py-8 perspective-container">
       
       <canvas id="heroParticles" class="absolute inset-0 z-0 pointer-events-none"></canvas>
       <div class="absolute inset-0 radial-glow-gold pointer-events-none z-0"></div>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center text-center">
         
-        <!-- CHIPS FLUTUANTES DO HERO (Sobem 60-80px e inclinam 30° em 0.1-1.35s) -->
-        <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
-          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-crimson/80 border border-gold/50 text-gold-light text-xs font-semibold backdrop-blur-md pulse-badge pl-7 shadow-lg">
+        <!-- CHIPS SUPERIORES DO HERO -->
+        <div id="heroChips" class="flex flex-wrap items-center justify-center gap-2.5 mb-4">
+          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-crimson/85 border border-gold/45 text-gold-light text-xs font-semibold pulse-badge pl-7">
             <span>Plantão Criminal 24h • Flagrantes & Habeas Corpus</span>
           </div>
-          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-gold/40 text-white text-xs font-semibold backdrop-blur-md shadow-lg">
+          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-gold/35 text-white text-xs font-semibold">
             <i data-lucide="shield-check" class="w-3.5 h-3.5 text-gold"></i>
             <span>Defesa do Consumidor • Fraudes, Bancos & Liminares</span>
           </div>
-          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-gold-light text-xs font-semibold backdrop-blur-md shadow-lg">
+          <div data-layer="hero-chip" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/15 border border-gold/35 text-gold-light text-xs font-semibold">
             <i data-lucide="award" class="w-3.5 h-3.5 text-gold"></i>
             <span>OAB/RJ 219.544 • Rio de Janeiro & Atuação Nacional</span>
           </div>
         </div>
 
-        <!-- TIPOGRAFIA MONUMENTAL EM CAMADAS -->
-        <div class="relative w-full select-none my-2">
-          <div class="parallax-layer-back monumental-title font-impact text-slate-700/35 transition-transform duration-100 ease-out">
+        <!-- TIPOGRAFIA GIGANTE EM CAMADAS (ZOOM DE PROFUNDIDADE NO SCROLL) -->
+        <div id="heroTitleStack" class="relative w-full select-none my-1 will-change-transform">
+          <div class="parallax-layer-back monumental-title font-impact text-slate-700/35">
             SUA LIBERDADE
           </div>
-          <div class="parallax-layer-mid monumental-title font-impact text-stroke-gold my-[-1.2vw] transition-transform duration-100 ease-out">
+          <div class="parallax-layer-mid monumental-title font-impact text-stroke-gold my-[-0.8vw]">
             E SEUS DIREITOS
           </div>
-          <div class="parallax-layer-front monumental-title font-impact text-gold-gradient transition-transform duration-100 ease-out">
+          <div class="parallax-layer-front monumental-title font-impact text-gold-gradient">
             DRA. NATHALIA LISBOA
           </div>
         </div>
 
-        <!-- MOCKUP / EMBLEMA 3D CENTRAL NÍTIDO -->
-        <div class="my-6 relative z-20 flex items-center justify-center">
+        <!-- MOCKUP / EMBLEMA CENTRAL CLEAN -->
+        <div class="my-4 relative z-20 flex items-center justify-center">
           <div id="heroObject" data-layer="hero-mockup" class="floating-hero-object relative flex flex-col items-center">
-            <div class="w-56 sm:w-64 rounded-2xl bg-white p-3.5 border-2 border-gold shadow-[0_25px_60px_rgba(0,0,0,0.85)] relative overflow-hidden">
-              <img src="assets/img/logo-full.jpg" alt="Dra. Nathalia Lisboa Advocacia & Assistência Jurídica" class="w-full h-auto rounded-xl object-contain">
-              <div class="mt-2 pt-2 border-t border-stone-200 flex items-center justify-between text-[11px] font-bold text-[#5C1618] px-1">
+            <div class="w-44 sm:w-52 rounded-2xl bg-white p-3 border-2 border-gold relative overflow-hidden">
+              <img src="assets/img/logo-full.jpg" alt="Dra. Nathalia Lisboa Advocacia & Assistência Jurídica" class="w-full h-auto rounded-lg object-contain">
+              <div class="mt-1.5 pt-1.5 border-t border-stone-200 flex items-center justify-between text-[10px] font-bold text-[#5C1618] px-1">
                 <span>OAB/RJ 219.544</span>
                 <span class="text-amber-700">★ Advocacia Titular</span>
               </div>
@@ -183,15 +185,13 @@
           </div>
         </div>
 
-        <!-- PROPOSTA DE VALOR DUPLA (CRIMINALISTA & CONSUMIDOR) -->
-        <p class="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed mb-8">
-          Atuação técnica, combativa e humanizada em duas frentes essenciais: a <strong class="text-gold-light">Defesa Criminal Intransigente</strong> (delegacias 24h, audiências de custódia, inquéritos e tribunais) e a <strong class="text-gold-light">Proteção Integral do Consumidor</strong> (golpes bancários, planos de saúde, liminares de urgência e indenizações por danos morais).
+        <!-- PROPOSTA DE VALOR CLEAN -->
+        <p id="heroSubtitle" class="max-w-2xl mx-auto text-slate-300 text-xs sm:text-sm leading-relaxed mb-5">
+          Atuação técnica, combativa e humanizada em duas frentes essenciais: a <strong class="text-gold-light">Defesa Criminal Intransigente</strong> (delegacias 24h, custódia e tribunais) e a <strong class="text-gold-light">Proteção Integral do Consumidor</strong> (golpes PIX, planos de saúde e indenizações).
         </p>
 
-        <!-- BOTÃO DO HERO COM OS 4 LOGO TILES DE 32PX AO LADO (Especificação <structure>) -->
-        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 w-full">
-          
-          <!-- 2 Logo Tiles à Esquerda do Botão -->
+        <!-- BOTÃO DO HERO COM OS 4 LOGO TILES DE 32PX AO LADO -->
+        <div id="heroCtaRow" class="flex flex-wrap items-center justify-center gap-3 w-full">
           <div class="flex items-center gap-2">
             <div class="hero-logo-tile" data-layer="logo-tile" title="Nathalia Lisboa Advocacia">
               <img src="assets/img/logo-icon.jpg" alt="NL Tile 1">
@@ -201,13 +201,11 @@
             </div>
           </div>
 
-          <!-- Botão Principal Hero -->
-          <button data-layer="hero-button" class="js-open-emergency-modal bg-gradient-to-r from-gold via-gold-light to-gold text-obsidian font-bold text-sm uppercase tracking-wider px-8 py-4 rounded-sm hover:brightness-110 shadow-xl shadow-gold/25 flex items-center justify-center gap-2.5 transition-transform hover:-translate-y-0.5">
-            <i data-lucide="message-square" class="w-5 h-5 text-obsidian"></i>
+          <button data-layer="hero-button" class="js-open-emergency-modal bg-gradient-to-r from-gold via-gold-light to-gold text-obsidian font-bold text-xs sm:text-sm uppercase tracking-wider px-7 py-3.5 rounded-sm hover:brightness-110 shadow-lg flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5">
+            <i data-lucide="message-square" class="w-4 h-4 text-obsidian"></i>
             Falar com a Dra. Nathalia Agora
           </button>
 
-          <!-- 2 Logo Tiles à Direita do Botão -->
           <div class="flex items-center gap-2">
             <div class="hero-logo-tile" data-layer="logo-tile" title="Direito do Consumidor">
               <img src="assets/img/logo-icon.jpg" alt="NL Tile 3">
@@ -216,38 +214,37 @@
               <img src="assets/img/logo-icon.jpg" alt="NL Tile 4">
             </div>
           </div>
-
         </div>
 
-        <!-- Botões Secundários: LinkedIn & Apresentação 3D -->
-        <div class="flex flex-wrap items-center justify-center gap-4 mt-5">
-          <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-xs font-semibold text-gold-light hover:text-white border border-gold/30 hover:border-gold px-4 py-2 rounded-full transition-colors">
+        <!-- Atalhos LinkedIn & Fly-Over -->
+        <div id="heroLinksRow" class="flex flex-wrap items-center justify-center gap-3 mt-4">
+          <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-gold-light hover:text-white border border-gold/30 hover:border-gold px-3.5 py-1.5 rounded-full transition-colors">
             <i data-lucide="linkedin" class="w-3.5 h-3.5 text-gold"></i>
             Perfil Oficial no LinkedIn
           </a>
-          <button class="js-start-flyover inline-flex items-center gap-2 text-xs font-semibold text-white bg-crimson/80 hover:bg-crimson border border-gold/40 px-4 py-2 rounded-full transition-colors">
+          <button class="js-start-flyover inline-flex items-center gap-1.5 text-[11px] font-semibold text-white bg-crimson/80 hover:bg-crimson border border-gold/40 px-3.5 py-1.5 rounded-full transition-colors">
             <i data-lucide="play-circle" class="w-3.5 h-3.5 text-gold"></i>
-            Assistir Fly-Over 3D da Página (14.5s)
+            Assistir Fly-Over 3D (14.5s)
           </button>
         </div>
 
-        <!-- Métricas de Autoridade -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-14 pt-8 border-t border-gold/15 w-full max-w-4xl">
+        <!-- BLOCO DE MÉTRICAS DO HERO -->
+        <div id="heroMetrics" class="grid grid-cols-2 md:grid-cols-4 gap-5 mt-8 pt-6 border-t border-gold/15 w-full max-w-4xl">
           <div class="text-center">
-            <span class="block font-impact text-2xl sm:text-3xl text-gold-gradient font-bold">OAB/RJ 219.544</span>
-            <span class="text-xs text-slate-400 uppercase tracking-wider">Inscrição Titular Ativa</span>
+            <span class="block font-impact text-xl sm:text-2xl text-gold-gradient font-bold">OAB/RJ 219.544</span>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider">Inscrição Titular Ativa</span>
           </div>
           <div class="text-center">
-            <span class="block font-impact text-2xl sm:text-3xl text-gold-gradient font-bold">24 HORAS</span>
-            <span class="text-xs text-slate-400 uppercase tracking-wider">Plantão Flagrantes & Liminares</span>
+            <span class="block font-impact text-xl sm:text-2xl text-gold-gradient font-bold">24 HORAS</span>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider">Plantão Flagrantes & Liminares</span>
           </div>
           <div class="text-center">
-            <span class="block font-impact text-2xl sm:text-3xl text-gold-gradient font-bold">2 ESFERAS</span>
-            <span class="text-xs text-slate-400 uppercase tracking-wider">Criminalista & Consumidor</span>
+            <span class="block font-impact text-xl sm:text-2xl text-gold-gradient font-bold">2 ESFERAS</span>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider">Criminalista & Consumidor</span>
           </div>
           <div class="text-center">
-            <span class="block font-impact text-2xl sm:text-3xl text-gold-gradient font-bold">100% DIGITAL</span>
-            <span class="text-xs text-slate-400 uppercase tracking-wider">Portal do Cliente & DataJud</span>
+            <span class="block font-impact text-xl sm:text-2xl text-gold-gradient font-bold">100% DIGITAL</span>
+            <span class="text-[11px] text-slate-400 uppercase tracking-wider">Portal do Cliente & DataJud</span>
           </div>
         </div>
 
@@ -255,10 +252,9 @@
     </section>
 
     <!-- ==========================================
-         SEÇÃO 2: A ADVOGADA — DRA. NATHALIA LISBOA (PERFIL & LINKEDIN)
-         Especificação 1.35-2.7s: Fotos/Cards principais sobem 100-130px (46°) e 2 chips sobem 200px (54°)
+         SEÇÃO 2: A ADVOGADA (CORTINA SOBRE HERO + COLUNA ESQUERDA FIXA)
          ========================================== -->
-    <section id="sobre" class="py-24 bg-alabaster text-obsidian relative overflow-hidden">
+    <section id="sobre" class="relative z-20 py-24 bg-alabaster text-obsidian overflow-x-clip shadow-[0_-30px_80px_rgba(0,0,0,0.65)]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="text-center max-w-3xl mx-auto mb-14">
@@ -271,82 +267,98 @@
           </h2>
         </div>
 
-        <!-- 2 Chips Flutuantes Laterais que sobem a 200px e 54° em 1.35-2.7s -->
+        <!-- 2 Chips Flutuantes -->
         <div class="flex flex-wrap items-center justify-between gap-4 mb-10">
-          <div data-layer="sec2-chip" class="bg-crimson text-gold-light px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xl flex items-center gap-2 border border-gold/50">
+          <div data-layer="sec2-chip" class="bg-crimson text-gold-light px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md flex items-center gap-2 border border-gold/50">
             <i data-lucide="gavel" class="w-4 h-4 text-gold"></i>
             Atuação Combativa em Delegacias e Tribunais
           </div>
-          <div data-layer="sec2-chip" class="bg-obsidian text-gold-light px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xl flex items-center gap-2 border border-gold/50">
+          <div data-layer="sec2-chip" class="bg-obsidian text-gold-light px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md flex items-center gap-2 border border-gold/50">
             <i data-lucide="scale" class="w-4 h-4 text-gold"></i>
             Defesa Contra Abusos Bancários e Planos de Saúde
           </div>
         </div>
 
-        <!-- Cards/Fotos Principais da Seção 2 (data-layer="sec2-photo") -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- GRID DE 2 COLUNAS: ESQUERDA FIXA (STICKY/PIN) + DIREITA COM DESTAQUE PROGRESSIVO -->
+        <div id="sobreGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
-          <!-- Card Visual de Identidade da Advogada -->
-          <div data-layer="sec2-photo" class="lg:col-span-5 bg-white p-8 rounded-2xl shadow-xl border border-stone-200 flex flex-col items-center text-center">
-            <div class="w-48 h-48 rounded-2xl bg-[#FAF8F5] border-2 border-gold/60 p-3 shadow-md mb-5 flex items-center justify-center">
-              <img src="assets/img/logo-full.jpg" alt="Dra. Nathalia Lisboa" class="w-full h-full object-contain">
-            </div>
-            <h3 class="font-display font-bold text-2xl text-crimson">Dra. Nathalia Lisboa</h3>
-            <p class="text-xs font-bold uppercase tracking-widest text-amber-800 mt-1 mb-4">
-              Advogada Criminalista & Especialista em Direito do Consumidor • OAB/RJ 219.544
-            </p>
-            <p class="text-xs text-slate-600 leading-relaxed mb-6">
-              Fundadora do escritório <strong>Nathalia Lisboa — Advocacia & Assistência Jurídica</strong>, com sede no Rio de Janeiro/RJ e atendimento nacional apoiado por plataforma LegalTech própria integrada ao CNJ.
-            </p>
-            <div class="flex flex-wrap items-center justify-center gap-3 w-full">
-              <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="flex-1 bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                <i data-lucide="linkedin" class="w-4 h-4"></i>
-                LinkedIn Oficial
-              </a>
-              <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="flex-1 bg-crimson hover:bg-crimson-light text-gold-light text-xs font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                <i data-lucide="phone" class="w-4 h-4"></i>
-                (21) 98180-1373
-              </a>
+          <!-- Coluna Esquerda Fixa (Foto/Identidade) -->
+          <div class="lg:col-span-5">
+            <div id="sobreLeftPin" data-layer="sec2-photo" class="bg-white p-8 rounded-2xl shadow-xl border border-stone-200 flex flex-col items-center text-center">
+              <div class="w-44 h-44 rounded-2xl bg-[#FAF8F5] border-2 border-gold/60 p-3 shadow-sm mb-5 flex items-center justify-center">
+                <img src="assets/img/logo-full.jpg" alt="Dra. Nathalia Lisboa" class="w-full h-full object-contain">
+              </div>
+              <h3 class="font-display font-bold text-2xl text-crimson">Dra. Nathalia Lisboa</h3>
+              <p class="text-xs font-bold uppercase tracking-widest text-amber-800 mt-1 mb-4">
+                Advogada Criminalista & Especialista em Direito do Consumidor • OAB/RJ 219.544
+              </p>
+              <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                Fundadora do escritório <strong>Nathalia Lisboa — Advocacia & Assistência Jurídica</strong>, com sede no Rio de Janeiro/RJ e atendimento nacional apoiado por plataforma LegalTech própria integrada ao CNJ.
+              </p>
+              <div class="flex flex-wrap items-center justify-center gap-3 w-full">
+                <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="flex-1 bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                  <i data-lucide="linkedin" class="w-4 h-4"></i>
+                  LinkedIn Oficial
+                </a>
+                <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="flex-1 bg-crimson hover:bg-crimson-light text-gold-light text-xs font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                  <i data-lucide="phone" class="w-4 h-4"></i>
+                  (21) 98180-1373
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Card de Pilares Profissionais & Credenciais -->
-          <div data-layer="sec2-photo" class="lg:col-span-7 bg-obsidian text-white p-8 sm:p-10 rounded-2xl shadow-2xl border border-gold/30 space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-gold/15 border border-gold/40 text-gold text-xs font-bold uppercase tracking-wider">
-              <i data-lucide="award" class="w-4 h-4"></i> Excelência Técnica & Transparência
-            </div>
-            <h3 class="font-display font-bold text-2xl sm:text-3xl text-white leading-snug">
-              A união entre a urgência da <span class="text-gold">Advocacia Criminal</span> e a força reparadora do <span class="text-gold">Direito do Consumidor</span>.
-            </h3>
-            <p class="text-slate-300 text-sm leading-relaxed">
-              Seja para preservar a liberdade individual diante de uma prisão em flagrante ou inquérito policial, seja para restabelecer a dignidade do consumidor lesado por fraudes bancárias, negativas médicas ou cobranças abusivas, cada processo é conduzido pessoalmente com estratégia sob medida.
-            </p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div class="p-4 rounded-xl bg-white/5 border border-gold/20">
-                <div class="text-gold font-display font-bold text-sm mb-1 flex items-center gap-2">
-                  <i data-lucide="shield-alert" class="w-4 h-4"></i> Defesa Criminal 24h
-                </div>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                  Flagrantes, Audiências de Custódia, Habeas Corpus, Defesa em Ações Penais, Tribunal do Júri e Recursos Superiores.
-                </p>
+          <!-- Coluna Direita (Revelação Progressiva no Scroll) -->
+          <div id="sobreRightCol" class="lg:col-span-7 space-y-10 pb-8">
+            
+            <!-- Bloco 1: Apresentação -->
+            <div data-layer="sec2-photo" class="js-sobre-block bg-obsidian text-white p-8 sm:p-10 rounded-2xl shadow-xl border border-gold/30 transition-all">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-gold/15 border border-gold/40 text-gold text-xs font-bold uppercase tracking-wider mb-4">
+                <i data-lucide="award" class="w-4 h-4"></i> Excelência Técnica & Transparência
               </div>
-              <div class="p-4 rounded-xl bg-white/5 border border-gold/20">
-                <div class="text-gold font-display font-bold text-sm mb-1 flex items-center gap-2">
-                  <i data-lucide="scale" class="w-4 h-4"></i> Direito do Consumidor
-                </div>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                  Golpes PIX e Fraudes Bancárias, Liminares contra Planos de Saúde, Negativação Indevida (Serasa/SPC) e Voos.
-                </p>
-              </div>
+              <h3 class="font-display font-bold text-2xl sm:text-3xl text-white leading-snug mb-4">
+                A união entre a urgência da <span class="text-gold">Advocacia Criminal</span> e a força reparadora do <span class="text-gold">Direito do Consumidor</span>.
+              </h3>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                Seja para preservar a liberdade individual diante de uma prisão em flagrante ou inquérito policial, seja para restabelecer a dignidade do consumidor lesado por fraudes bancárias, negativas médicas ou cobranças abusivas, cada processo é conduzido pessoalmente com estratégia sob medida.
+              </p>
             </div>
 
-            <div class="pt-2 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 text-xs text-slate-400">
-              <span>📍 Rio de Janeiro / RJ • Atendimento Presencial e Online em Todo o Brasil</span>
-              <a href="https://minhaempresacrm.github.io/nathalia-lisboa-advocacia/" target="_blank" rel="noopener" class="text-gold hover:underline font-bold flex items-center gap-1">
-                Acessar Portal LegalTech do Cliente <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-              </a>
+            <!-- Bloco 2: Pilar Criminal -->
+            <div class="js-sobre-block bg-obsidian text-white p-8 rounded-2xl shadow-xl border border-gold/30 transition-all">
+              <div class="text-gold font-display font-bold text-lg mb-2 flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-lg bg-crimson/80 border border-gold/40 flex items-center justify-center">
+                  <i data-lucide="shield-alert" class="w-5 h-5 text-gold"></i>
+                </span>
+                Defesa Criminal 24h
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                Flagrantes, Audiências de Custódia, Habeas Corpus, Defesa em Ações Penais, Tribunal do Júri e Recursos Superiores.
+              </p>
+              <div class="text-xs text-gold-light/90 font-semibold border-t border-white/10 pt-3">
+                Atuação imediata em delegacias e presídios para garantia de prerrogativas e liberdade provisória.
+              </div>
             </div>
+
+            <!-- Bloco 3: Pilar Consumidor & Portal -->
+            <div class="js-sobre-block bg-obsidian text-white p-8 rounded-2xl shadow-xl border border-gold/30 transition-all">
+              <div class="text-gold font-display font-bold text-lg mb-2 flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-lg bg-emerald-950 border border-gold/40 flex items-center justify-center">
+                  <i data-lucide="scale" class="w-5 h-5 text-gold"></i>
+                </span>
+                Direito do Consumidor
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed mb-5">
+                Golpes PIX e Fraudes Bancárias, Liminares contra Planos de Saúde, Negativação Indevida (Serasa/SPC) e Voos.
+              </p>
+              <div class="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 text-xs text-slate-400">
+                <span>📍 Rio de Janeiro / RJ • Atendimento Presencial e Online em Todo o Brasil</span>
+                <a href="https://minhaempresacrm.github.io/nathalia-lisboa-advocacia/" target="_blank" rel="noopener" class="text-gold hover:underline font-bold flex items-center gap-1">
+                  Acessar Portal LegalTech do Cliente <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -355,148 +367,173 @@
     </section>
 
     <!-- ==========================================
-         SEÇÃO 3: ÁREAS DE ATUAÇÃO (CRIMINALISTA & CONSUMIDOR)
-         6 Cards em Relevo que se elevam ao passar pelo centro da lente
+         SEÇÃO 3: FRENTES DE ATUAÇÃO (100VH PIN + TRILHO HORIZONTAL EM 2 ATOS)
+         Ato I: 3 Cards Advocacia Criminal -> Ato II: 3 Cards Direito do Consumidor
          ========================================== -->
-    <section id="areas" class="py-24 bg-obsidian text-white relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="areas" class="relative z-20 bg-obsidian text-white overflow-x-clip py-16 lg:py-0 lg:h-[calc(100vh-106px)] lg:min-h-[600px] lg:flex lg:flex-col lg:justify-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         
-        <div class="text-center max-w-3xl mx-auto mb-16">
-          <span class="text-xs font-bold text-gold uppercase tracking-[0.25em] block mb-2">
-            ESPECIALIDADES DA DRA. NATHALIA LISBOA
-          </span>
-          <h2 class="monumental-title font-impact text-white">
-            FRENTES DE <span class="text-gold-gradient">ATUAÇÃO</span>
-          </h2>
-          <p class="text-slate-400 text-sm mt-3">
-            Defesa técnica especializada na esfera Penal e na proteção dos Direitos do Consumidor.
-          </p>
+        <!-- Cabeçalho Fixo no Topo do Palco -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 lg:mb-8">
+          <div>
+            <span class="text-xs font-bold text-gold uppercase tracking-[0.22em] block mb-1">
+              ESPECIALIDADES DA DRA. NATHALIA LISBOA
+            </span>
+            <h2 class="font-impact text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-none">
+              FRENTES DE <span class="text-gold-gradient">ATUAÇÃO</span>
+            </h2>
+          </div>
+
+          <!-- Indicador de Ato + Progresso em Dourado -->
+          <div class="flex flex-col items-start md:items-end gap-2 min-w-[240px]">
+            <div id="areasActBadge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson/70 border border-gold/40 text-gold-light text-[11px] font-bold uppercase tracking-wider">
+              <span id="areasActLabel">ATO I / II • ADVOCACIA CRIMINAL</span>
+            </div>
+            <div class="w-full md:w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden border border-gold/20">
+              <div id="areasProgressBar" class="h-full bg-gradient-to-r from-gold-dark via-gold to-gold-light w-1/2 lg:w-[15%] transition-none"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          <!-- Card 1: Criminal - Flagrantes & Custódia -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-red-600/30 to-crimson border border-red-500/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="siren" class="w-7 h-7 text-red-400"></i>
+        <!-- Janela de Corte do Trilho Horizontal -->
+        <div id="areasRailViewport" class="w-full overflow-x-clip">
+          <!-- Trilho Horizontal no Desktop (200% largura: Slide Criminal + Slide Consumidor) | Grid no Mobile -->
+          <div id="areasTrack" class="flex flex-col lg:flex-row lg:w-[200%] gap-8 lg:gap-0 will-change-transform">
+            
+            <!-- ATO I: 3 CARDS DE ADVOCACIA CRIMINAL -->
+            <div id="areasAct1" class="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-3 gap-6 lg:pr-4">
+              
+              <!-- Card 1: Criminal - Flagrantes & Custódia -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-600/30 to-crimson border border-red-500/40 flex items-center justify-center mb-4">
+                    <i data-lucide="siren" class="w-6 h-6 text-red-400"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-red-400 uppercase block mb-1">ADVOCACIA CRIMINAL • PLANTÃO 24H</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Prisão em Flagrante & Audiência de Custódia</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Presença imediata em delegacias para garantir o direito ao silêncio, coibir abusos e requerer o relaxamento da prisão ou liberdade provisória na Audiência de Custódia.
+                  </p>
+                </div>
+                <button data-area="Flagrante" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Acionar Plantão Criminal ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-red-400 uppercase block mb-1">ADVOCACIA CRIMINAL • PLANTÃO 24H</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Prisão em Flagrante & Audiência de Custódia</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Presença imediata em delegacias para garantir o direito ao silêncio, coibir abusos e requerer o relaxamento da prisão ou liberdade provisória na Audiência de Custódia.
-              </p>
-            </div>
-            <button data-area="Flagrante" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Acionar Plantão Criminal ───→
-            </button>
-          </div>
 
-          <!-- Card 2: Criminal - Habeas Corpus & Processo Penal -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-gold/30 to-gold-dark/50 border border-gold/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="gavel" class="w-7 h-7 text-gold"></i>
+              <!-- Card 2: Criminal - Habeas Corpus & Processo Penal -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-gold/30 to-gold-dark/50 border border-gold/40 flex items-center justify-center mb-4">
+                    <i data-lucide="gavel" class="w-6 h-6 text-gold"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">ADVOCACIA CRIMINAL • DEFESA TÉCNICA</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Habeas Corpus, Inquéritos & Tribunal do Júri</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Impetração de Habeas Corpus para revogação de prisões preventivas, acompanhamento em inquéritos policiais, arguição de nulidades e sustentação oral em tribunais.
+                  </p>
+                </div>
+                <button data-area="Habeas Corpus" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Solicitar Defesa Penal ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">ADVOCACIA CRIMINAL • DEFESA TÉCNICA</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Habeas Corpus, Inquéritos & Tribunal do Júri</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Impetração de Habeas Corpus para revogação de prisões preventivas, acompanhamento em inquéritos policiais, arguição de nulidades e sustentação oral em tribunais.
-              </p>
-            </div>
-            <button data-area="Habeas Corpus" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Solicitar Defesa Penal ───→
-            </button>
-          </div>
 
-          <!-- Card 3: Criminal - Crimes Financeiros, Honra e Digitais -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-slate-700/50 to-slate-900 border border-slate-500/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="lock" class="w-7 h-7 text-slate-200"></i>
+              <!-- Card 3: Criminal - Crimes Financeiros, Honra e Digitais -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-700/50 to-slate-900 border border-slate-500/40 flex items-center justify-center mb-4">
+                    <i data-lucide="lock" class="w-6 h-6 text-slate-200"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-slate-300 uppercase block mb-1">ADVOCACIA CRIMINAL • ESPECIALIZADA</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Crimes Cibernéticos, Patrimoniais & Honra</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Defesa técnica e assistência de acusação em crimes digitais, estelionato, queixas-crime (calúnia, difamação e injúria) e medidas protetivas de urgência.
+                  </p>
+                </div>
+                <button data-area="Inquérito" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Agendar Consulta Sigilosa ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-slate-300 uppercase block mb-1">ADVOCACIA CRIMINAL • ESPECIALIZADA</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Crimes Cibernéticos, Patrimoniais & Honra</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Defesa técnica e assistência de acusação em crimes digitais, estelionato, queixas-crime (calúnia, difamação e injúria) e medidas protetivas de urgência.
-              </p>
-            </div>
-            <button data-area="Inquérito" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Agendar Consulta Sigilosa ───→
-            </button>
-          </div>
 
-          <!-- Card 4: Consumidor - Fraudes Bancárias & Golpes PIX -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-emerald-600/30 to-emerald-950 border border-emerald-500/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="landmark" class="w-7 h-7 text-emerald-400"></i>
+            </div>
+
+            <!-- ATO II: 3 CARDS DE DIREITO DO CONSUMIDOR -->
+            <div id="areasAct2" class="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-3 gap-6 lg:pl-4">
+
+              <!-- Card 4: Consumidor - Fraudes Bancárias & Golpes PIX -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-600/30 to-emerald-950 border border-emerald-500/40 flex items-center justify-center mb-4">
+                    <i data-lucide="landmark" class="w-6 h-6 text-emerald-400"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase block mb-1">DIREITO DO CONSUMIDOR • BANCÁRIO</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Fraudes Bancárias, Golpes PIX & Empréstimos</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Recuperação de valores subtraídos em golpes digitais, cartões clonados, empréstimos consignados não reconhecidos e defesa contra juros abusivos.
+                  </p>
+                </div>
+                <button data-area="Fraude Bancária" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Recuperar Valores ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-emerald-400 uppercase block mb-1">DIREITO DO CONSUMIDOR • BANCÁRIO</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Fraudes Bancárias, Golpes PIX & Empréstimos</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Recuperação de valores subtraídos em golpes digitais, cartões clonados, empréstimos consignados não reconhecidos e defesa contra juros abusivos.
-              </p>
-            </div>
-            <button data-area="Fraude Bancária" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Recuperar Valores ───→
-            </button>
-          </div>
 
-          <!-- Card 5: Consumidor - Planos de Saúde & Liminares -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-rose-600/30 to-crimson-dark border border-rose-400/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="heart-pulse" class="w-7 h-7 text-rose-300"></i>
+              <!-- Card 5: Consumidor - Planos de Saúde & Liminares -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-rose-600/30 to-crimson-dark border border-rose-400/40 flex items-center justify-center mb-4">
+                    <i data-lucide="heart-pulse" class="w-6 h-6 text-rose-300"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-rose-300 uppercase block mb-1">DIREITO DO CONSUMIDOR • SAÚDE 24H</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Planos de Saúde & Liminares Médicas Urgentes</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Ações com pedido liminar imediato contra negativas de cirurgias, internações, exames, tratamentos oncológicos, home care e reajustes abusivos por faixa etária.
+                  </p>
+                </div>
+                <button data-area="Plano de Saúde" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Pedir Liminar de Saúde ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-rose-300 uppercase block mb-1">DIREITO DO CONSUMIDOR • SAÚDE 24H</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Planos de Saúde & Liminares Médicas Urgentes</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Ações com pedido liminar imediato contra negativas de cirurgias, internações, exames, tratamentos oncológicos, home care e reajustes abusivos por faixa etária.
-              </p>
-            </div>
-            <button data-area="Plano de Saúde" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Pedir Liminar de Saúde ───→
-            </button>
-          </div>
 
-          <!-- Card 6: Consumidor - Negativação Indevida & Aéreo -->
-          <div data-layer="card" class="feature-card rounded-xl p-7 flex flex-col justify-between relative group">
-            <div>
-              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-600/30 to-indigo-950 border border-blue-400/40 flex items-center justify-center mb-5 card-pop-element">
-                <i data-lucide="shield-check" class="w-7 h-7 text-blue-300"></i>
+              <!-- Card 6: Consumidor - Negativação Indevida & Aéreo -->
+              <div data-layer="card" class="feature-card rounded-xl p-6 sm:p-7 flex flex-col justify-between">
+                <div>
+                  <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600/30 to-indigo-950 border border-blue-400/40 flex items-center justify-center mb-4">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-blue-300"></i>
+                  </div>
+                  <span class="text-[10px] font-bold tracking-widest text-blue-300 uppercase block mb-1">DIREITO DO CONSUMIDOR • INDENIZAÇÕES</span>
+                  <h3 class="font-display font-bold text-lg text-white mb-2">Negativação Indevida (SPC/Serasa) & Voos</h3>
+                  <p class="text-xs text-slate-300 leading-relaxed mb-5">
+                    Liminar para limpeza imediata do nome protestado indevidamente, cortes ilegais de luz/água, atrasos ou cancelamentos de voos, extravio de bagagem e compras online.
+                  </p>
+                </div>
+                <button data-area="Consumidor" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
+                  Buscar Indenização ───→
+                </button>
               </div>
-              <span class="text-[10px] font-bold tracking-widest text-blue-300 uppercase block mb-1">DIREITO DO CONSUMIDOR • INDENIZAÇÕES</span>
-              <h3 class="font-display font-bold text-lg text-white mb-2.5">Negativação Indevida (SPC/Serasa) & Voos</h3>
-              <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                Liminar para limpeza imediata do nome protestado indevidamente, cortes ilegais de luz/água, atrasos ou cancelamentos de voos, extravio de bagagem e compras online.
-              </p>
-            </div>
-            <button data-area="Consumidor" class="js-open-emergency-modal text-xs font-bold text-gold hover:text-gold-light flex items-center gap-2 uppercase tracking-wider">
-              Buscar Indenização ───→
-            </button>
-          </div>
 
+            </div>
+
+          </div>
         </div>
 
       </div>
     </section>
 
     <!-- ==========================================
-         SEÇÃO 4: O RITO ESTRATÉGICO & PARIDADE DE ARMAS
+         SEÇÃO 4: O RITO ESTRATÉGICO & PARIDADE DE ARMAS (PINNED ~180VH)
+         Passos 01 -> 02 -> 03 acendem sequencialmente + Simulador totalmente interativo
          ========================================== -->
-    <section id="rito" class="py-24 bg-gradient-to-b from-crimson-dark via-crimson to-obsidian text-white relative overflow-hidden">
+    <section id="rito" class="relative z-20 py-20 lg:py-0 lg:min-h-[calc(100vh-106px)] lg:flex lg:items-center bg-gradient-to-b from-crimson-dark via-crimson to-obsidian text-white overflow-x-clip">
       <div class="absolute inset-0 radial-glow-crimson pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         
-        <div id="forca" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div id="forca" class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
           
           <div>
-            <span class="text-xs font-bold text-gold-light uppercase tracking-[0.25em] block mb-3">
+            <span class="text-xs font-bold text-gold-light uppercase tracking-[0.25em] block mb-2">
               MÉTODO DRA. NATHALIA LISBOA
             </span>
-            <h2 class="monumental-title font-impact text-white mb-6">
+            <h2 class="monumental-title font-impact text-white mb-5">
               A LEI AO<br>
               <span class="text-gold-gradient">SEU LADO.</span><br>
               SEM RECUAR.
@@ -505,25 +542,26 @@
               Tanto diante do aparato punitivo do Estado quanto diante de grandes conglomerados bancários e operadoras, o cidadão jamais pode ficar desprotegido. Atuamos com velocidade de protocolo e transparência total em cada etapa.
             </p>
 
+            <!-- 3 Passos com Destaque Sequencial no Scroll -->
             <div class="space-y-3">
-              <div class="flex items-start gap-3">
+              <div id="ritoStep1" class="rito-step is-active flex items-start gap-3">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-gold shrink-0 mt-0.5"></i>
                 <span class="text-sm text-slate-100"><strong>01. Diagnóstico Imediato:</strong> Análise de provas, autos de prisão ou contratos em minutos pelo WhatsApp.</span>
               </div>
-              <div class="flex items-start gap-3">
+              <div id="ritoStep2" class="rito-step lg:opacity-35 flex items-start gap-3">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-gold shrink-0 mt-0.5"></i>
                 <span class="text-sm text-slate-100"><strong>02. Medida de Urgência:</strong> Protocolo imediato de Habeas Corpus, Pedido de Liberdade ou Tutela de Urgência Cível.</span>
               </div>
-              <div class="flex items-start gap-3">
+              <div id="ritoStep3" class="rito-step lg:opacity-35 flex items-start gap-3">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-gold shrink-0 mt-0.5"></i>
                 <span class="text-sm text-slate-100"><strong>03. Acompanhamento Digital:</strong> Você acompanha cada movimentação traduzida em linguagem simples no Portal do Cliente.</span>
               </div>
             </div>
           </div>
 
-          <!-- Simulador Interativo da Balança -->
-          <div data-layer="card" class="bg-obsidian/80 p-8 rounded-2xl border border-gold/35 backdrop-blur-md shadow-2xl">
-            <div class="text-center mb-6">
+          <!-- Simulador Interativo da Balança (100% Clicável e Arrastável) -->
+          <div data-layer="card" class="bg-obsidian/85 p-8 rounded-2xl border border-gold/35 shadow-2xl relative z-30">
+            <div class="text-center mb-5">
               <span class="text-xs uppercase tracking-widest text-gold font-bold block mb-1">
                 Simulador de Equilíbrio Jurídico
               </span>
@@ -532,26 +570,26 @@
               </p>
             </div>
 
-            <div class="relative h-44 flex items-center justify-center my-4">
-              <div class="w-1.5 h-36 bg-gold mx-auto"></div>
-              <div class="absolute top-10 w-64 h-1.5 bg-gradient-to-r from-gold via-gold-light to-gold rounded-full"></div>
+            <div class="relative h-40 flex items-center justify-center my-3">
+              <div class="w-1.5 h-32 bg-gold mx-auto"></div>
+              <div class="absolute top-8 w-64 h-1.5 bg-gradient-to-r from-gold via-gold-light to-gold rounded-full"></div>
               
-              <div id="leftPan" class="absolute left-6 top-10 flex flex-col items-center transition-transform duration-200 ease-out">
-                <div class="w-0.5 h-20 bg-gold/70"></div>
+              <div id="leftPan" class="absolute left-6 top-8 flex flex-col items-center transition-transform duration-200 ease-out">
+                <div class="w-0.5 h-16 bg-gold/70"></div>
                 <div class="w-24 py-2 bg-crimson border border-red-500/50 rounded-sm text-center shadow-lg">
                   <span class="text-[10px] font-bold text-white block uppercase">Abuso / Acusação</span>
                 </div>
               </div>
 
-              <div id="rightPan" class="absolute right-6 top-10 flex flex-col items-center transition-transform duration-200 ease-out">
-                <div class="w-0.5 h-20 bg-gold/70"></div>
+              <div id="rightPan" class="absolute right-6 top-8 flex flex-col items-center transition-transform duration-200 ease-out">
+                <div class="w-0.5 h-16 bg-gold/70"></div>
                 <div class="w-24 py-2 bg-gradient-to-br from-gold to-gold-dark border border-gold-light rounded-sm text-center shadow-lg">
                   <span class="text-[10px] font-bold text-obsidian block uppercase">Defesa Técnica</span>
                 </div>
               </div>
             </div>
 
-            <div class="mt-8 px-4">
+            <div class="mt-6 px-4">
               <input id="balanceRange" type="range" min="-40" max="40" value="25" class="w-full accent-gold cursor-pointer bg-slate-800 h-2 rounded-lg">
               <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-semibold">
                 <span>Sem Defesa</span>
@@ -573,12 +611,11 @@
     </section>
 
     <!-- ==========================================
-         SEÇÃO 5: DEPOIMENTO 3D & FECHAMENTO EM DUAS PARTES
-         Especificação 5.45-6.3s: Testimonial Card sobe de 22 a 112px, 30° e mostra borda branca de 34px
-         Fechamento: Geist 500 + Instrument Serif Italic (#8b8b92)
+         SEÇÃO 5A: RECONHECIMENTO (CAMADA DE BASE PARA STACKING SECTION)
+         Permanece travada com leve escurecimento e scale: 0.96 enquanto o bloco final sobe por cima
          ========================================== -->
-    <section id="depoimento" class="py-24 bg-alabaster text-obsidian relative overflow-hidden">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="depoimento" class="relative z-10 py-24 lg:min-h-[calc(100vh-106px)] lg:flex lg:items-center bg-[#ECEEF3] text-obsidian overflow-x-clip">
+      <div id="depoimentoInner" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full will-change-transform">
         
         <div class="text-center mb-12">
           <span class="text-xs font-bold text-crimson uppercase tracking-[0.25em] block mb-2">
@@ -589,7 +626,7 @@
           </h2>
         </div>
 
-        <!-- CARD DE DEPOIMENTO COM ELEVAÇÃO 3D E BORDA BRANCA 34PX (data-layer="testimonial") -->
+        <!-- CARD DE DEPOIMENTO COM BORDA BRANCA -->
         <div data-layer="testimonial" class="testimonial-3d-card bg-obsidian text-white p-8 sm:p-12 rounded-2xl max-w-3xl mx-auto relative">
           <div class="flex items-center gap-1 text-gold mb-4">
             <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -610,8 +647,16 @@
           </div>
         </div>
 
-        <!-- FECHAMENTO EM DUAS PARTES (Statement em Geist 500 + Italic Tail em Instrument Serif #8b8b92) -->
-        <div class="mt-20 text-center max-w-4xl mx-auto">
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SEÇÃO 5B: STACKING SECTION FINAL (CTA FINAL + RODAPÉ SOBEM POR CIMA)
+         ========================================== -->
+    <div id="closingStack" class="relative z-20 bg-alabaster rounded-t-3xl shadow-[0_-28px_75px_rgba(8,10,15,0.28)] border-t border-stone-300/80 overflow-x-clip">
+      
+      <section id="fechamento" class="py-24 text-obsidian">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div class="inline-flex items-center gap-2.5 bg-white px-5 py-2 rounded-full shadow-md border border-stone-200/80 mb-6">
             <img src="assets/img/logo-icon.jpg" alt="Logo NL" class="w-6 h-6 rounded-full object-cover">
             <span class="font-geist font-medium text-sm text-obsidian">Dra. Nathalia Lisboa • OAB/RJ 219.544</span>
@@ -635,99 +680,88 @@
             </button>
           </div>
         </div>
+      </section>
 
-      </div>
-    </section>
-
-    <!-- ==========================================
-         RODAPÉ INSTITUCIONAL DE PRESTÍGIO (8.0s no Fly-Over)
-         ========================================== -->
-    <footer class="bg-obsidian py-16 border-t border-gold/15 text-slate-400 text-xs">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          
-          <div>
-            <div class="flex items-center gap-3 mb-3">
-              <img src="assets/img/logo-icon.jpg" alt="NL" class="w-10 h-10 rounded-md border border-gold/50">
-              <div>
-                <span class="font-display font-bold text-base text-white block leading-none">NATHALIA LISBOA</span>
-                <span class="text-[10px] tracking-[0.18em] text-gold uppercase font-semibold">Advocacia & Assistência</span>
+      <!-- RODAPÉ INSTITUCIONAL -->
+      <footer class="bg-obsidian py-16 border-t border-gold/15 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <img src="assets/img/logo-icon.jpg" alt="NL" class="w-10 h-10 rounded-md border border-gold/50">
+                <div>
+                  <span class="font-display font-bold text-base text-white block leading-none">NATHALIA LISBOA</span>
+                  <span class="text-[10px] tracking-[0.18em] text-gold uppercase font-semibold">Advocacia & Assistência</span>
+                </div>
               </div>
+              <p class="text-slate-400 text-xs leading-relaxed">
+                Escritório inscrito na <strong>OAB/RJ sob o nº 219.544</strong>. Atuação especializada em Direito Criminal e Direito do Consumidor com atendimento de urgência 24 horas.
+              </p>
             </div>
-            <p class="text-slate-400 text-xs leading-relaxed">
-              Escritório inscrito na <strong>OAB/RJ sob o nº 219.544</strong>. Atuação especializada em Direito Criminal e Direito do Consumidor com atendimento de urgência 24 horas.
-            </p>
+
+            <div>
+              <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Contato Direto & Plantão</h4>
+              <p class="text-slate-400 mb-2">Disponibilidade imediata para flagrantes, custódia e liminares médicas ou bancárias.</p>
+              <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="text-gold font-bold text-sm block hover:underline">
+                WhatsApp: (21) 98180-1373
+              </a>
+              <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="text-slate-300 hover:text-gold text-xs flex items-center gap-1.5 mt-2">
+                <i data-lucide="linkedin" class="w-3.5 h-3.5 text-gold"></i> linkedin.com/in/nathalia-lisboa-6156791b9
+              </a>
+            </div>
+
+            <div>
+              <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Ética & Provimento OAB</h4>
+              <p class="text-slate-400 text-xs leading-relaxed">
+                Este portal observa rigorosamente o Código de Ética e Disciplina da OAB e o Provimento nº 205/2021 do Conselho Federal, garantindo sigilo profissional absoluto.
+              </p>
+            </div>
+
+            <div>
+              <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Localização & Portal</h4>
+              <p class="text-slate-400 text-xs mb-3">
+                Rio de Janeiro - RJ • Atendimento em todo o território nacional via Processo Eletrônico.
+              </p>
+              <a href="https://minhaempresacrm.github.io/nathalia-lisboa-advocacia/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-gold hover:underline font-semibold text-xs">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i> Área Restrita do Cliente
+              </a>
+            </div>
+
           </div>
 
-          <div>
-            <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Contato Direto & Plantão</h4>
-            <p class="text-slate-400 mb-2">Disponibilidade imediata para flagrantes, custódia e liminares médicas ou bancárias.</p>
-            <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="text-gold font-bold text-sm block hover:underline">
-              WhatsApp: (21) 98180-1373
-            </a>
-            <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="text-slate-300 hover:text-gold text-xs flex items-center gap-1.5 mt-2">
-              <i data-lucide="linkedin" class="w-3.5 h-3.5 text-gold"></i> linkedin.com/in/nathalia-lisboa-6156791b9
-            </a>
-          </div>
-
-          <div>
-            <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Ética & Provimento OAB</h4>
-            <p class="text-slate-400 text-xs leading-relaxed">
-              Este portal observa rigorosamente o Código de Ética e Disciplina da OAB e o Provimento nº 205/2021 do Conselho Federal, garantindo sigilo profissional absoluto.
-            </p>
-          </div>
-
-          <div>
-            <h4 class="font-display font-bold text-sm text-white mb-3 uppercase tracking-wider">Localização & Portal</h4>
-            <p class="text-slate-400 text-xs mb-3">
-              Rio de Janeiro - RJ • Atendimento em todo o território nacional via Processo Eletrônico.
-            </p>
-            <a href="https://minhaempresacrm.github.io/nathalia-lisboa-advocacia/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-gold hover:underline font-semibold text-xs">
-              <i data-lucide="lock" class="w-3.5 h-3.5"></i> Área Restrita do Cliente
-            </a>
-          </div>
-
-        </div>
-
-        <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500">
-          <p>© 2026 Dra. Nathalia Lisboa — Advocacia & Assistência Jurídica (OAB/RJ 219.544). Todos os direitos reservados.</p>
-          <div class="flex items-center gap-6 mt-4 sm:mt-0">
-            <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="hover:text-gold transition-colors">LinkedIn</a>
-            <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="hover:text-gold transition-colors">WhatsApp 24h</a>
-            <button class="js-start-flyover hover:text-gold transition-colors">Fly-Over 3D</button>
+          <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500">
+            <p>© 2026 Dra. Nathalia Lisboa — Advocacia & Assistência Jurídica (OAB/RJ 219.544). Todos os direitos reservados.</p>
+            <div class="flex items-center gap-6 mt-4 sm:mt-0">
+              <a href="https://br.linkedin.com/in/nathalia-lisboa-6156791b9" target="_blank" rel="noopener" class="hover:text-gold transition-colors">LinkedIn</a>
+              <a href="https://wa.me/5521981801373" target="_blank" rel="noopener" class="hover:text-gold transition-colors">WhatsApp 24h</a>
+              <button class="js-start-flyover hover:text-gold transition-colors">Fly-Over 3D</button>
+            </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+
+    </div>
 
   </div>
 
   <!-- =========================================================
        PALCO INTERATIVO 3D FLY-OVER (1440x1152 @ 60fps — 14.5s)
-       Cumpre integralmente <direction>, <structure> e <build>
        ========================================================= -->
   <div id="flyoverViewport">
     <div id="flyoverStage">
-      
-      <!-- Camadas de Desfoque de Profundidade (DOF) -->
       <div id="flyoverDofFar"></div>
       <div id="flyoverDofNear"></div>
 
-      <!-- Rig Contínuo da Câmera 3D -->
       <div id="flyoverCameraRig">
         <div id="flyoverPageMount"></div>
       </div>
 
-      <!-- Os 4 Logo Tiles Flutuantes que Acompanham o Filme até o End Card -->
       <div id="flyTile0" class="flyover-floating-tile"><img src="assets/img/logo-icon.jpg" alt="NL"></div>
       <div id="flyTile1" class="flyover-floating-tile"><img src="assets/img/logo-icon.jpg" alt="NL"></div>
       <div id="flyTile2" class="flyover-floating-tile"><img src="assets/img/logo-icon.jpg" alt="NL"></div>
       <div id="flyTile3" class="flyover-floating-tile"><img src="assets/img/logo-icon.jpg" alt="NL"></div>
 
-      <!-- END TITLE CARD (9.97s - 14.5s)
-           10.02s: White badge pill (logo + brand, 21px) em y = 44
-           10.12s: Linha 1 em Geist 500 (74px), 1 palavra a cada 0.06s
-           10.36s: Italic tail em Instrument Serif (82px, #8b8b92), 1 palavra a cada 0.05s -->
       <div id="flyoverEndCard">
         <div id="endCardBadge" style="margin-top: 44px; opacity: 0;" class="inline-flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-lg border border-stone-200/90">
           <img src="assets/img/logo-icon.jpg" alt="NL" class="w-7 h-7 rounded-full object-cover">
@@ -750,19 +784,15 @@
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- Barra de Controle do Fly-Over 3D e Atalhos dos Stills (0s, 1.6s, 2.5s, 5s, 6.5s, 9.3s, 11s) -->
     <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] bg-obsidian/95 text-white border border-gold/40 rounded-xl px-5 py-3 shadow-2xl flex flex-wrap items-center gap-3 max-w-[96vw]">
       <button id="flyoverPlayPauseBtn" class="bg-gold text-obsidian font-bold text-xs uppercase px-3.5 py-2 rounded-md flex items-center gap-1.5">
         <i data-lucide="pause" class="w-4 h-4"></i><span>Pausar</span>
       </button>
-
       <input id="flyoverScrubber" type="range" min="0" max="14.5" step="0.01" value="0" class="w-36 sm:w-56 accent-gold cursor-pointer">
       <span id="flyoverTimeLabel" class="font-mono text-xs text-gold-light w-28">0.00s / 14.50s</span>
 
-      <!-- Botões dos Stills Exatos do Prompt (<start>: 0, 1.6, 2.5, 5, 6.5, 9.3 e 11s) -->
       <div class="hidden md:flex items-center gap-1.5 border-l border-white/15 pl-3">
         <span class="text-[10px] text-slate-400 uppercase mr-1">Stills:</span>
         <button data-time="0" class="js-flyover-preset text-[11px] bg-white/10 hover:bg-gold hover:text-obsidian px-2 py-1 rounded">0s</button>
@@ -782,11 +812,9 @@
 
   <!-- ==========================================
        MODAL DE TRIAGEM (CRIMINAL & CONSUMIDOR)
-       Direciona para o WhatsApp Oficial (21) 98180-1373
        ========================================== -->
   <div id="emergencyModal" class="fixed inset-0 z-50 hidden bg-black/85 modal-overlay flex items-center justify-center p-4">
     <div class="bg-obsidian border border-gold/40 rounded-xl w-full max-w-lg p-7 relative shadow-2xl shadow-gold/20">
-      
       <button id="closeModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
@@ -843,7 +871,6 @@
           Iniciar Atendimento no WhatsApp (21) 98180-1373
         </button>
       </form>
-
     </div>
   </div>
 
@@ -859,7 +886,12 @@
     </button>
   </div>
 
-  <!-- Scripts -->
+  <!-- GSAP + ScrollTrigger + ScrollToPlugin (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <!-- App Script -->
   <script src="assets/js/app.js"></script>
 </body>
 </html>

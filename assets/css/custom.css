@@ -1,6 +1,6 @@
 /* ========================================================
    DRA. NATHALIA LISBOA — ADVOCACIA CRIMINAL & CONSUMIDOR
-   Estética Cinematográfica + Motor 3D Fly-Over (14.5s @ 60fps)
+   Versão Otimizada (Clean & Leve 60fps) + Scrollytelling GSAP
    ======================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap');
@@ -28,16 +28,20 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* Controlado suavemente pelo GSAP / âncoras calibradas */
 }
 
 body {
   font-family: var(--font-body);
   background-color: var(--color-obsidian);
   color: #FFFFFF;
-  overflow-x: hidden;
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+.overflow-x-clip {
+  overflow-x: clip;
 }
 
 /* Custom Scrollbar */
@@ -63,10 +67,10 @@ body {
 .font-geist { font-family: var(--font-geist); }
 .font-instrument { font-family: var(--font-serif-italic); }
 
-/* Letras Gigantes de Fundo */
+/* Letras Gigantes de Fundo (Escaladas de forma clean para caber na viewport) */
 .monumental-title {
-  font-size: clamp(2.8rem, 8.2vw, 8.6rem);
-  line-height: 0.9;
+  font-size: clamp(2.4rem, 6.8vw, 6.8rem);
+  line-height: 0.92;
   letter-spacing: -0.03em;
   font-weight: 900;
   text-transform: uppercase;
@@ -75,11 +79,6 @@ body {
 .text-stroke-gold {
   -webkit-text-stroke: 1.5px rgba(197, 160, 89, 0.85);
   color: transparent;
-  transition: all 0.4s ease;
-}
-.text-stroke-gold:hover {
-  color: rgba(197, 160, 89, 0.18);
-  -webkit-text-stroke-color: #F3E5AB;
 }
 
 /* Efeito Dourado Metálico */
@@ -89,38 +88,35 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Efeitos 3D e Parallax no Modo Navegação */
+/* Efeitos 3D Leves (Apenas GPU Transform — Zero Repaint de Sombra Pesada) */
 .perspective-container {
-  perspective: 1600px;
-  transform-style: preserve-3d;
+  perspective: 1400px;
 }
 
 .floating-hero-object {
-  transform-style: preserve-3d;
   will-change: transform;
-  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 45px rgba(197, 160, 89, 0.28));
-  animation: floatSubtle 6s ease-in-out infinite;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.65);
+  animation: floatSubtle 7s ease-in-out infinite;
 }
 
 @keyframes floatSubtle {
-  0%, 100% { transform: translateY(0px) rotateY(0deg) rotateX(0deg); }
-  50% { transform: translateY(-14px) rotateY(4deg) rotateX(2deg); }
+  0%, 100% { transform: translate3d(0, 0px, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
 }
 
 /* 4 Logo Tiles ao lado do botão Hero */
 .hero-logo-tile {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 9px;
   background: #FFFFFF;
   border: 1.5px solid rgba(197, 160, 89, 0.75);
-  box-shadow: 0 10px 24px rgba(26, 33, 51, 0.35), 0 0 14px rgba(197, 160, 89, 0.25);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
-  will-change: transform;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .hero-logo-tile img {
   width: 100%;
@@ -128,60 +124,48 @@ body {
   object-fit: cover;
 }
 .hero-logo-tile:hover {
-  transform: translate3d(0, -10px, 40px) scale(1.22) rotateX(18deg);
-  box-shadow: 4px 18px 28px rgba(26, 33, 51, 0.45);
+  transform: translate3d(0, -6px, 0) scale(1.12);
 }
 
-/* Chips 3D que se erguem em direção à lente */
-[data-layer="chip"] {
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-[data-layer="chip"]:hover {
-  transform: translate3d(0, -8px, 60px) rotateX(24deg);
-  box-shadow: 6px 24px 34px rgba(26, 33, 51, 0.38);
-}
-
-/* Glow e Luz de Fundo */
+/* Glow sutil estático */
 .radial-glow-gold {
-  background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.18) 0%, rgba(8, 10, 15, 0) 70%);
+  background: radial-gradient(circle at 50% 45%, rgba(197, 160, 89, 0.14) 0%, rgba(8, 10, 15, 0) 68%);
 }
 .radial-glow-crimson {
-  background: radial-gradient(circle at 50% 50%, rgba(92, 22, 24, 0.32) 0%, rgba(8, 10, 15, 0) 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(92, 22, 24, 0.28) 0%, rgba(8, 10, 15, 0) 70%);
 }
 
-/* Cards de Especialidades (data-layer="card") */
+/* Cards Clean & Leves */
 .feature-card {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.4s ease;
-  background: linear-gradient(180deg, rgba(22, 27, 38, 0.94) 0%, rgba(12, 16, 24, 0.98) 100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  background: linear-gradient(180deg, rgba(20, 25, 36, 0.96) 0%, rgba(11, 14, 21, 0.98) 100%);
   border: 1px solid rgba(197, 160, 89, 0.22);
-  transform-style: preserve-3d;
-  will-change: transform;
 }
 .feature-card:hover {
-  transform: translate3d(0, -14px, 48px) rotateX(8deg);
+  transform: translateY(-6px);
   border-color: rgba(197, 160, 89, 0.65);
-  box-shadow: 5px 22px 38px rgba(26, 33, 51, 0.5), 0 0 28px rgba(197, 160, 89, 0.16);
-}
-.card-pop-element {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.feature-card:hover .card-pop-element {
-  transform: translate3d(0, -10px, 30px) scale(1.08);
 }
 
-/* Card de Depoimento com Borda Branca 34px (5.45s - 6.3s spec) */
-.testimonial-3d-card {
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.55s ease;
-  transform-style: preserve-3d;
-  border-bottom: 12px solid #FFFFFF;
-  box-shadow: 0 24px 48px rgba(26, 33, 51, 0.28);
+/* Passos do Rito Estratégico */
+.rito-step {
+  transition: opacity 0.35s ease, border-color 0.35s ease, background-color 0.35s ease, transform 0.35s ease;
+  border-left: 3px solid rgba(197, 160, 89, 0.25);
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgba(8, 10, 15, 0.35);
 }
-.testimonial-3d-card:hover {
-  transform: translate3d(0, -16px, 90px) rotateX(22deg);
-  border-bottom-width: 26px;
-  box-shadow: 11px 44px 62px rgba(26, 33, 51, 0.34);
+.rito-step.is-active {
+  opacity: 1 !important;
+  border-left-color: #C5A059;
+  background: rgba(197, 160, 89, 0.12);
+  transform: translateX(6px);
+}
+
+/* Card de Depoimento Clean */
+.testimonial-3d-card {
+  border-bottom: 14px solid #FFFFFF;
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.22);
+  transition: transform 0.35s ease;
 }
 
 /* Badges e Botões de Urgência */
@@ -198,33 +182,30 @@ body {
   height: 8px;
   border-radius: 50%;
   background-color: #22C55E;
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  animation: pulseGreen 2s infinite;
+  animation: pulseGreen 2.4s infinite;
 }
 
 @keyframes pulseGreen {
-  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.45; transform: translateY(-50%) scale(1.25); }
 }
 
 .floating-whatsapp-btn {
-  box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+  transition: transform 0.25s ease;
 }
 .floating-whatsapp-btn:hover {
-  transform: scale(1.08) translateY(-4px);
-  box-shadow: 0 14px 40px rgba(34, 197, 94, 0.6);
+  transform: scale(1.06) translateY(-3px);
 }
 
 .modal-overlay {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* ========================================================
    PALCO 3D FLY-OVER (14.5s @ 60fps — 1440x1152)
-   Piso de Estúdio: #f9fbfb no centro, #f2f3f6 nos cantos
+   Ativo apenas quando o usuário clica em "Ver Fly-Over 3D"
    ======================================================== */
 body.flyover-active {
   background: radial-gradient(circle at 50% 50%, #f9fbfb 0%, #f2f3f6 100%) !important;
@@ -280,7 +261,6 @@ body.flyover-active #pageSheet {
   overflow: visible;
 }
 
-/* Lente de Desfoque de Profundidade (Razor-thin DOF) */
 #flyoverDofNear,
 #flyoverDofFar {
   position: absolute;
@@ -289,8 +269,8 @@ body.flyover-active #pageSheet {
   z-index: 35;
 }
 #flyoverDofNear {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   mask-image: linear-gradient(to bottom, transparent 0%, transparent 64%, rgba(0,0,0,0.65) 82%, rgba(0,0,0,1) 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 64%, rgba(0,0,0,0.65) 82%, rgba(0,0,0,1) 100%);
 }
@@ -301,7 +281,6 @@ body.flyover-active #pageSheet {
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 22%, transparent 38%, transparent 100%);
 }
 
-/* End Card Overlay (9.97s - 14.5s) */
 #flyoverEndCard {
   position: absolute;
   inset: 0;
@@ -320,7 +299,6 @@ body.flyover-active #pageSheet {
   will-change: opacity, transform, filter;
 }
 
-/* Floating Logo Tiles Layer in Fly-Over */
 .flyover-floating-tile {
   position: absolute;
   border-radius: 22px;
